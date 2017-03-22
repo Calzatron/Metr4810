@@ -47,11 +47,11 @@ void init_tcnt0(void){
 
 
 uint32_t get_tcnt0_ticks(void) {
-	uint32_t return_value;
+	//uint32_t return_value;
 
 	uint8_t interrupts_on = bit_is_set(SREG, SREG_I);
 	cli();
-	return_value = clock_ticks;
+	uint32_t return_value = tcnt0_ticks;
 	if(interrupts_on) {
 		sei();
 	}
@@ -63,7 +63,7 @@ uint8_t	get_button_(void){
 	/* checks if PINC5 is active */
 	uint8_t interrupts_on = bit_is_set(SREG, SREG_I);
 	cli();
-	return_value = Button_on;
+	uint8_t return_value = Button_on;
 	if(interrupts_on){
 		sei();
 	}

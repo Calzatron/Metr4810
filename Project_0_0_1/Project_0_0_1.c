@@ -18,7 +18,7 @@
 
 /*	function declarations	*/
 void initialise(void);
-void custom_delay(void);
+void custom_delay(uint32_t ticks);
 void Sensor_input(void);
 
 
@@ -38,7 +38,7 @@ void initialise(void){
 	
 	init_tcnt0();
 	sei();
-	srand(get_clock_ticks());
+	srand(get_tcnt0_ticks());
 	
 	// set pins C to input; default
 	DDRC = 0x00;
@@ -50,7 +50,7 @@ void initialise(void){
 void custom_delay(uint32_t ticks){
 	uint32_t current_time;
 	current_time = get_tcnt0_ticks();
-	while((current_time + ticks) > get_clock_ticks()){
+	while((current_time + ticks) > get_tcnt0_ticks()){
 		//wait
 	}
 }
