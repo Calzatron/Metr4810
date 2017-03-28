@@ -118,6 +118,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Motors.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Motors.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Project_0_0_1.c">
       <SubType>compile</SubType>
     </Compile>
@@ -125,6 +131,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tcnt0.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="USART_Receiver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="USART_Receiver.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

@@ -17,8 +17,6 @@ static volatile uint32_t tcnt0_ticks;
 
 // variables used for checking PINC5
 volatile uint8_t Button_on;
-static uint8_t button;
-static uint8_t BTN = PINC5;
 
 
 void init_tcnt0(void){
@@ -71,12 +69,14 @@ uint8_t	get_button_(void){
 }
 
 
+
 ISR(TIMER0_COMPA_vect) {
 	/* Increment our clock tick count */
 	tcnt0_ticks++;
 	
 	// check PINC5
-	if(button && (1<<BTN)){
+	uint8_t button = PINC;
+	if(button && (1<<PINC5)){
 		Button_on = 1;
 	}
 	else{
