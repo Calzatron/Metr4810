@@ -11,17 +11,21 @@
 #include <avr/pgmspace.h>			//for storing / accessing data in flash program instead of SRAM -> variable manipulation
 #include <stdio.h>					//input / output
 #include <stdlib.h>					//standard function library; malloc / sort / rand etc
-#include <util/delay.h>
+//#include <util/delay.h>
 
 /*	custom libraries	*/
 #include "tcnt0.h"
 #include "Motors.h"
+#include "USART_Receiver.h"
+
 /*	function declarations	*/
 void initialise(void);
 void custom_delay(uint32_t ticks);
 void Sensor_input(void);
+void step_clockwise(void);
+void step_clockwise(void);
 
-uint8_t phase;
+
 
 
 #define F_CPU 8000000L
@@ -31,10 +35,14 @@ uint8_t phase;
 /* functional code	*/
 int main(void)
 {
+	//initialise();
+	DDRB = 0xFF;
+	DDRA = 0xFF;
 	initialise();
-	
     while(1)
     {
+		PORTA = (1<<PORTA0);
+		
         //TODO:: Please write your application code 
     }
 }
@@ -49,14 +57,24 @@ void initialise(void){
 
 	USART_init(BAUDRATE);
 	
-	init_step();
-	// set pins C to input; default
-	DDRC = 0x00;
-	
-	while(!get_button_()){; /* wait to be turned on by PINC5 */}
+	//init_step();
 
-	// initialise constants
-	phase = 0;
+
+	while(1){
+		//PORTA = (1<<PORTA0);
+
+		if(get_button_() == 0){
+				PORTB = (1<<PORTB1);
+				PORTA = (0<<PORTA0);
+		}
+
+		else{
+				PORTB = (0<<PORTB1);
+				PORTA = (1<<PORTA0);
+		}
+		
+	}
+
 	
 }
 
@@ -83,76 +101,6 @@ void custom_delay(uint32_t ticks){
 	}
 }
 
-void step_clockwise(void){
-	DDRD = 0xFF;
-	uint32_t current_time;
-	uint8_t time_on = 100;
-
-	if(phase = 0){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (1<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(0<<PORTD5);
-		}
-		++phase;
-	}
-	else if(phase = 1){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (0<<PORTD2)|(1<<PORTD3)|(0<<PORTD4)|(0<<PORTD5);
-		}
-		++phase;
-	}
-	else if(phase = 2){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (0<<PORTD2)|(0<<PORTD3)|(1<<PORTD4)|(0<<PORTD5);
-		}
-		++phase;
-	}
-	else if(phase = 3){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (0<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(1<<PORTD5);
-		}
-		phase = 0;
-	}
-}
-
-
-void step_clockwise(void){
-	DDRD = 0xFF;
-	uint32_t current_time;
-	uint8_t time_on = 100;
-
-	if(phase = 0){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (1<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(0<<PORTD5);
-		}
-		++phase;
-	}
-	else if(phase = 1){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (0<<PORTD2)|(1<<PORTD3)|(0<<PORTD4)|(0<<PORTD5);
-		}
-		++phase;
-	}
-	else if(phase = 2){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (0<<PORTD2)|(0<<PORTD3)|(1<<PORTD4)|(0<<PORTD5);
-		}
-		++phase;
-	}
-	else if(phase = 3){
-		current_time = get_tcnt0_ticks();
-		while((current_time + time_on) > get_tcnt0_ticks()){
-			PORTD = (0<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(1<<PORTD5);
-		}
-		phase = 0;
-	}
-}
 
 
 

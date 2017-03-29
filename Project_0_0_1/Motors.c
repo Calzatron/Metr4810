@@ -4,12 +4,26 @@
  * Created: 23/03/2017 1:19:37 PM
  *  Author: s4357594
  */ 
+#include <avr/io.h>
+#include <avr/interrupt.h>			//enables interrupts
+#include <avr/pgmspace.h>			//for storing / accessing data in flash program instead of SRAM -> variable manipulation
+#include <stdio.h>					//input / output
+#include <stdlib.h>					//standard function library; malloc / sort / rand etc
+//#include <util/delay.h>
+
+#include "Motors.h"
+#include "tcnt0.h"
+
+void step_clockwise(uint8_t time_on);
+void step_anticlockwise(uint8_t time_on);
+void step(int8_t speed);
 
  uint8_t steps;
-
+ uint8_t phase;
 
  void init_step(void){
 	steps = 0;
+	phase = 0;
  }
 
  uint8_t current_step(void){
@@ -17,6 +31,8 @@
 
 	return returnValue;
  }
+
+
 
  void step(int8_t speed){
 	// clockwise defined positive for speed
@@ -64,28 +80,28 @@
 	 uint32_t current_time;
 	 //uint8_t time_on = 100;
 
-	 if(phase = 0){
+	 if(phase == 0){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (1<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(0<<PORTD5);
 		 }
 		 ++phase;
 	 }
-	 else if(phase = 1){
+	 else if(phase == 1){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (0<<PORTD2)|(1<<PORTD3)|(0<<PORTD4)|(0<<PORTD5);
 		 }
 		 ++phase;
 	 }
-	 else if(phase = 2){
+	 else if(phase == 2){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (0<<PORTD2)|(0<<PORTD3)|(1<<PORTD4)|(0<<PORTD5);
 		 }
 		 ++phase;
 	 }
-	 else if(phase = 3){
+	 else if(phase == 3){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (0<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(1<<PORTD5);
@@ -101,28 +117,28 @@
 	 uint32_t current_time;
 	 //uint8_t time_on = 100;
 
-	 if(phase = 0){
+	 if(phase == 0){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (0<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(1<<PORTD5);
 		 }
 		 ++phase;
 	 }
-	 else if(phase = 1){
+	 else if(phase == 1){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (0<<PORTD2)|(0<<PORTD3)|(1<<PORTD4)|(0<<PORTD5);
 		 }
 		 ++phase;
 	 }
-	 else if(phase = 2){
+	 else if(phase == 2){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (0<<PORTD2)|(1<<PORTD3)|(1<<PORTD4)|(0<<PORTD5);
 		 }
 		 ++phase;
 	 }
-	 else if(phase = 3){
+	 else if(phase == 3){
 		 current_time = get_tcnt0_ticks();
 		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTD = (1<<PORTD2)|(0<<PORTD3)|(0<<PORTD4)|(1<<PORTD5);

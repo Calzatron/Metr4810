@@ -9,18 +9,28 @@
  */ 
 
 #include <avr/io.h>
-#include <avr/interrupt.h>
+#include <avr/interrupt.h>			//enables interrupts
+#include <avr/pgmspace.h>			//for storing / accessing data in flash program instead of SRAM -> variable manipulation
+#include <stdio.h>					//input / output
+#include <stdlib.h>					//standard function library; malloc / sort / rand etc
+//#include <util/delay.h>
 #include "tcnt0.h"
 
 static volatile uint32_t tcnt0_ticks;
-
+static volatile uint32_t tic;
+static volatile uint32_t currentTic;
 
 // variables used for checking PINC5
-volatile uint8_t Button_on;
+static volatile uint8_t Button_on;
+
+//#define bit_is_set(value, bit) ((value) & _BV(bit))
 
 
 void init_tcnt0(void){
 	
+	Button_on = 0;
+	tic = 100;
+	currentTic = tcnt0_ticks;
 	// set global counter
 	tcnt0_ticks = 0L;
 	
@@ -73,13 +83,15 @@ uint8_t	get_button_(void){
 ISR(TIMER0_COMPA_vect) {
 	/* Increment our clock tick count */
 	tcnt0_ticks++;
-	
+	uint8_t temp = PINC & 0b00000001;
 	// check PINC5
-	uint8_t button = PINC;
-	if(button && (1<<PINC5)){
-		Button_on = 1;
-	}
-	else{
-		Button_on = 0;
-	}
+	//if((tic + currentTic) < tcnt0_ticks){
+		//if (bit_is_set(PINC, PC7)){
+		if (temp != 0x00){//(PINC && (1<<PINC7)){//
+			Button_on = 1;
+		} else {
+			Button_on = 0;
+		}
+		currentTic = tcnt0_ticks;
+	//}
 }

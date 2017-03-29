@@ -37,8 +37,10 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../Motors.c \
 ../Project_0_0_1.c \
-../tcnt0.c
+../tcnt0.c \
+../USART_Receiver.c
 
 
 PREPROCESSING_SRCS += 
@@ -48,20 +50,28 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+Motors.o \
 Project_0_0_1.o \
-tcnt0.o
+tcnt0.o \
+USART_Receiver.o
 
 OBJS_AS_ARGS +=  \
+Motors.o \
 Project_0_0_1.o \
-tcnt0.o
+tcnt0.o \
+USART_Receiver.o
 
 C_DEPS +=  \
+Motors.d \
 Project_0_0_1.d \
-tcnt0.d
+tcnt0.d \
+USART_Receiver.d
 
 C_DEPS_AS_ARGS +=  \
+Motors.d \
 Project_0_0_1.d \
-tcnt0.d
+tcnt0.d \
+USART_Receiver.d
 
 OUTPUT_FILE_PATH +=Project_0_0_1.elf
 
@@ -77,6 +87,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

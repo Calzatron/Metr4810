@@ -3,7 +3,7 @@ Archive member included to satisfy reference by file (symbol)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
                               C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.106/gcc/dev/atmega324p/avr5/crtatmega324p.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_clear_bss.o)
-                              tcnt0.o (__do_clear_bss)
+                              Motors.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(rand.o)
                               Project_0_0_1.o (srand)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_divmodsi4.o)
@@ -24,22 +24,53 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 Allocating common symbols
 Common symbol       size              file
 
-Button_on           0x1               tcnt0.o
+steps               0x1               Motors.o
+phase               0x1               Motors.o
 
 Discarded input sections
 
  .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.106/gcc/dev/atmega324p/avr5/crtatmega324p.o
  .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.106/gcc/dev/atmega324p/avr5/crtatmega324p.o
+ .text          0x00000000        0x0 Motors.o
+ .data          0x00000000        0x0 Motors.o
+ .bss           0x00000000        0x0 Motors.o
+ .text.init_step
+                0x00000000        0xa Motors.o
+ .text.current_step
+                0x00000000        0x6 Motors.o
+ .text.increment_step
+                0x00000000        0xc Motors.o
+ .text.decrement_step
+                0x00000000        0xc Motors.o
+ .text.step_clockwise
+                0x00000000       0xe8 Motors.o
+ .text.step_anticlockwise
+                0x00000000       0xe8 Motors.o
+ .text.step     0x00000000       0x44 Motors.o
+ .debug_info    0x00000000      0x27b Motors.o
+ .debug_abbrev  0x00000000       0xfd Motors.o
+ .debug_loc     0x00000000      0x3a2 Motors.o
+ .debug_aranges
+                0x00000000       0x50 Motors.o
+ .debug_ranges  0x00000000       0x40 Motors.o
+ .debug_line    0x00000000      0x328 Motors.o
+ .debug_str     0x00000000      0x208 Motors.o
+ .comment       0x00000000       0x31 Motors.o
+ .debug_frame   0x00000000       0xbc Motors.o
+ COMMON         0x00000000        0x2 Motors.o
  .text          0x00000000        0x0 Project_0_0_1.o
  .data          0x00000000        0x0 Project_0_0_1.o
  .bss           0x00000000        0x0 Project_0_0_1.o
  .text.custom_delay
                 0x00000000       0x30 Project_0_0_1.o
- .text.Sensor_input
+ .text.sensor_input
                 0x00000000        0x2 Project_0_0_1.o
  .text          0x00000000        0x0 tcnt0.o
  .data          0x00000000        0x0 tcnt0.o
  .bss           0x00000000        0x0 tcnt0.o
+ .text          0x00000000        0x0 USART_Receiver.o
+ .data          0x00000000        0x0 USART_Receiver.o
+ .bss           0x00000000        0x0 USART_Receiver.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
@@ -191,8 +222,10 @@ Linker script and memory map
 
 Address of section .data set to 0x800100
 LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.106/gcc/dev/atmega324p/avr5/crtatmega324p.o
+LOAD Motors.o
 LOAD Project_0_0_1.o
 LOAD tcnt0.o
+LOAD USART_Receiver.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libm.a
 END GROUP
@@ -300,7 +333,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x308
+.text           0x00000000      0x3cc
  *(.vectors)
  .vectors       0x00000000       0x7c C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.106/gcc/dev/atmega324p/avr5/crtatmega324p.o
                 0x00000000                __vector_default
@@ -388,55 +421,60 @@ END GROUP
                 0x000000b6                __vector_14
                 0x000000b6                __vector_10
                 0x000000b6                __vector_18
-                0x000000b6                __vector_20
                 0x000000ba                . = ALIGN (0x2)
  *(.text.*)
  .text.initialise
-                0x000000ba       0x1c Project_0_0_1.o
+                0x000000ba       0x30 Project_0_0_1.o
                 0x000000ba                initialise
- .text.main     0x000000d6        0x6 Project_0_0_1.o
-                0x000000d6                main
+ .text.main     0x000000ea        0xa Project_0_0_1.o
+                0x000000ea                main
  .text.init_tcnt0
-                0x000000dc       0x30 tcnt0.o
-                0x000000dc                init_tcnt0
+                0x000000f4       0x6c tcnt0.o
+                0x000000f4                init_tcnt0
  .text.get_tcnt0_ticks
-                0x0000010c       0x1c tcnt0.o
-                0x0000010c                get_tcnt0_ticks
+                0x00000160       0x1c tcnt0.o
+                0x00000160                get_tcnt0_ticks
  .text.get_button_
-                0x00000128       0x10 tcnt0.o
-                0x00000128                get_button_
+                0x0000017c       0x10 tcnt0.o
+                0x0000017c                get_button_
  .text.__vector_16
-                0x00000138       0x4e tcnt0.o
-                0x00000138                __vector_16
+                0x0000018c       0x7a tcnt0.o
+                0x0000018c                __vector_16
+ .text.__vector_20
+                0x00000206       0x20 USART_Receiver.o
+                0x00000206                __vector_20
+ .text.USART_init
+                0x00000226       0x24 USART_Receiver.o
+                0x00000226                USART_init
  .text.avr-libc
-                0x00000186       0xb8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(rand.o)
-                0x00000218                rand_r
-                0x0000021e                rand
-                0x00000228                srand
+                0x0000024a       0xb8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(rand.o)
+                0x000002dc                rand_r
+                0x000002e2                rand
+                0x000002ec                srand
  .text.libgcc.div
-                0x0000023e       0x2e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_divmodsi4.o)
-                0x0000023e                __divmodsi4
+                0x00000302       0x2e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_divmodsi4.o)
+                0x00000302                __divmodsi4
  .text.libgcc.div
-                0x0000026c       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_negsi2.o)
-                0x0000026c                __negsi2
+                0x00000330       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_negsi2.o)
+                0x00000330                __negsi2
  .text.libgcc.mul
-                0x0000027c       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_muluhisi3.o)
-                0x0000027c                __muluhisi3
+                0x00000340       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_muluhisi3.o)
+                0x00000340                __muluhisi3
  .text.libgcc.mul
-                0x00000292       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_mulshisi3.o)
-                0x00000292                __mulshisi3
-                0x00000298                __mulohisi3
+                0x00000356       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_mulshisi3.o)
+                0x00000356                __mulshisi3
+                0x0000035c                __mulohisi3
  .text.libgcc.div
-                0x000002a2       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_udivmodsi4.o)
-                0x000002a2                __udivmodsi4
+                0x00000366       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_udivmodsi4.o)
+                0x00000366                __udivmodsi4
  .text.libgcc.mul
-                0x000002e6       0x1e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_umulhisi3.o)
-                0x000002e6                __umulhisi3
-                0x00000304                . = ALIGN (0x2)
+                0x000003aa       0x1e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_umulhisi3.o)
+                0x000003aa                __umulhisi3
+                0x000003c8                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000304        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
-                0x00000304                _exit
-                0x00000304                exit
+ .fini9         0x000003c8        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
+                0x000003c8                _exit
+                0x000003c8                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -455,11 +493,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000304        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
+ .fini0         0x000003c8        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000308                _etext = .
+                0x000003cc                _etext = .
 
-.data           0x00800100        0x4 load address 0x00000308
+.data           0x00800100        0x4 load address 0x000003cc
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(rand.o)
@@ -471,24 +509,29 @@ END GROUP
                 0x00800104                _edata = .
                 0x00800104                PROVIDE (__data_end, .)
 
-.bss            0x00800104        0x5
+.bss            0x00800104        0xe
                 0x00800104                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
+ .bss.Button_on
+                0x00800104        0x1 tcnt0.o
+ .bss.currentTic
+                0x00800105        0x4 tcnt0.o
+ .bss.tic       0x00800109        0x4 tcnt0.o
  .bss.tcnt0_ticks
-                0x00800104        0x4 tcnt0.o
+                0x0080010d        0x4 tcnt0.o
+ .bss.receivedByte
+                0x00800111        0x1 USART_Receiver.o
  *(COMMON)
- COMMON         0x00800108        0x1 tcnt0.o
-                0x00800108                Button_on
-                0x00800109                PROVIDE (__bss_end, .)
-                0x00000308                __data_load_start = LOADADDR (.data)
-                0x0000030c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800112                PROVIDE (__bss_end, .)
+                0x000003cc                __data_load_start = LOADADDR (.data)
+                0x000003d0                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800109        0x0
+.noinit         0x00800112        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800109                _end = .
+                0x00800112                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -533,6 +576,7 @@ END GROUP
  .comment       0x00000000       0x30 Project_0_0_1.o
                                  0x31 (size before relaxing)
  .comment       0x00000030       0x31 tcnt0.o
+ .comment       0x00000030       0x31 USART_Receiver.o
  .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr5\libc.a(rand.o)
 
 .note.gnu.avr.deviceinfo
@@ -555,47 +599,56 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x70
+.debug_aranges  0x00000000       0x98
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x38 Project_0_0_1.o
  .debug_aranges
                 0x00000038       0x38 tcnt0.o
+ .debug_aranges
+                0x00000070       0x28 USART_Receiver.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x306
+.debug_info     0x00000000      0x413
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x182 Project_0_0_1.o
- .debug_info    0x00000182      0x184 tcnt0.o
+ .debug_info    0x00000000      0x1ae Project_0_0_1.o
+ .debug_info    0x000001ae      0x19b tcnt0.o
+ .debug_info    0x00000349       0xca USART_Receiver.o
 
-.debug_abbrev   0x00000000      0x1d7
+.debug_abbrev   0x00000000      0x27d
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x108 Project_0_0_1.o
- .debug_abbrev  0x00000108       0xcf tcnt0.o
+ .debug_abbrev  0x00000000      0x134 Project_0_0_1.o
+ .debug_abbrev  0x00000134       0xb9 tcnt0.o
+ .debug_abbrev  0x000001ed       0x90 USART_Receiver.o
 
-.debug_line     0x00000000      0x292
+.debug_line     0x00000000      0x3ce
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x141 Project_0_0_1.o
- .debug_line    0x00000141      0x151 tcnt0.o
+ .debug_line    0x00000000      0x173 Project_0_0_1.o
+ .debug_line    0x00000173      0x176 tcnt0.o
+ .debug_line    0x000002e9       0xe5 USART_Receiver.o
 
-.debug_frame    0x00000000       0xdc
+.debug_frame    0x00000000      0x120
  *(.debug_frame)
  .debug_frame   0x00000000       0x68 Project_0_0_1.o
  .debug_frame   0x00000068       0x74 tcnt0.o
+ .debug_frame   0x000000dc       0x44 USART_Receiver.o
 
-.debug_str      0x00000000      0x1e2
+.debug_str      0x00000000      0x22a
  *(.debug_str)
- .debug_str     0x00000000      0x194 Project_0_0_1.o
-                                0x1d3 (size before relaxing)
- .debug_str     0x00000194       0x4e tcnt0.o
-                                0x1d0 (size before relaxing)
+ .debug_str     0x00000000      0x19f Project_0_0_1.o
+                                0x1de (size before relaxing)
+ .debug_str     0x0000019f       0x57 tcnt0.o
+                                0x1de (size before relaxing)
+ .debug_str     0x000001f6       0x34 USART_Receiver.o
+                                0x18a (size before relaxing)
 
-.debug_loc      0x00000000      0x10c
+.debug_loc      0x00000000      0x16e
  *(.debug_loc)
  .debug_loc     0x00000000       0xa9 Project_0_0_1.o
  .debug_loc     0x000000a9       0x63 tcnt0.o
+ .debug_loc     0x0000010c       0x62 USART_Receiver.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -615,10 +668,11 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x50
+.debug_ranges   0x00000000       0x68
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x28 Project_0_0_1.o
  .debug_ranges  0x00000028       0x28 tcnt0.o
+ .debug_ranges  0x00000050       0x18 USART_Receiver.o
 
 .debug_macro
  *(.debug_macro)

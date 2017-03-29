@@ -9,6 +9,7 @@
 #ifndef MOTORS_H_
 #define MOTORS_H_
 
+#include <stdint.h>
 
 void init_step(void);
 

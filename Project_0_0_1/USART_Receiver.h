@@ -5,6 +5,9 @@
  *  Author: s4357594
  */ 
 
+ #include <stdint.h>
+
+
 
 #ifndef USART_RECEIVER_H_
 #define USART_RECEIVER_H_
