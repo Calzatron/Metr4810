@@ -36,12 +36,11 @@ void step_clockwise(void);
 int main(void)
 {
 	//initialise();
-	DDRB = 0xFF;
-	DDRA = 0xFF;
+	
 	initialise();
     while(1)
     {
-		PORTA = (1<<PORTA0);
+		
 		
         //TODO:: Please write your application code 
     }
@@ -50,6 +49,13 @@ int main(void)
 
 void initialise(void){
 	
+
+	DDRB = 0xFF;
+	DDRA = 0xFF;
+
+	DDRD |= (1<<PORTD7)|(1<<PORTD6);
+	DDRC = 0xFF;
+
 	init_tcnt0();
 	//set Global Interrupt Enable flag
 	sei();
@@ -78,19 +84,7 @@ void initialise(void){
 	
 }
 
-/*void USART_init(unsigned int ubrr){
-	// UBRR0 is split into two; store the high 4 bits of the baud rate 
-	// in UBRR0H and then rest in UBRR0L
-	UBRR0H = (unsigned char)(ubrr>>8);
-	UBRR0L = (unsigned char)(ubrr);
 
-	UCSR0B |= (1<<RXEN0);
-	UCSR0B |= (1<<TXCIE0);
-	UCSR0A |= (1<<TXC);
-
-	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
-
-}*/
 
 
 void custom_delay(uint32_t ticks){

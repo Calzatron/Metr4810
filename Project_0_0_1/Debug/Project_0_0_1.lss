@@ -316,19 +316,19 @@ ISR(TIMER0_COMPA_vect) {
  1b8:	90 93 0e 01 	sts	0x010E, r25	; 0x80010e <tcnt0_ticks+0x1>
  1bc:	a0 93 0f 01 	sts	0x010F, r26	; 0x80010f <tcnt0_ticks+0x2>
  1c0:	b0 93 10 01 	sts	0x0110, r27	; 0x800110 <tcnt0_ticks+0x3>
-	uint8_t temp = PINC & 0b00000001;
+	uint8_t temp = PIND & (1<<PORTD7);
 	// check PINC5
 	//if((tic + currentTic) < tcnt0_ticks){
 		//if (bit_is_set(PINC, PC7)){
 		if (temp != 0x00){//(PINC && (1<<PINC7)){//
- 1c4:	30 9b       	sbis	0x06, 0	; 6
+ 1c4:	4f 9b       	sbis	0x09, 7	; 9
  1c6:	04 c0       	rjmp	.+8      	; 0x1d0 <__vector_16+0x44>
 			Button_on = 1;
  1c8:	81 e0       	ldi	r24, 0x01	; 1
  1ca:	80 93 04 01 	sts	0x0104, r24	; 0x800104 <__data_end>
  1ce:	02 c0       	rjmp	.+4      	; 0x1d4 <__vector_16+0x48>
 		} else {
-			Button_on = 0;
+		Button_on = 0;
  1d0:	10 92 04 01 	sts	0x0104, r1	; 0x800104 <__data_end>
 		}
 		currentTic = tcnt0_ticks;

@@ -83,15 +83,12 @@ uint8_t	get_button_(void){
 ISR(TIMER0_COMPA_vect) {
 	/* Increment our clock tick count */
 	tcnt0_ticks++;
-	uint8_t temp = PINC & 0b00000001;
-	// check PINC5
-	//if((tic + currentTic) < tcnt0_ticks){
-		//if (bit_is_set(PINC, PC7)){
-		if (temp != 0x00){//(PINC && (1<<PINC7)){//
+	uint8_t temp = PIND & (1<<PORTD7);
+	// check PINCD7
+		if (temp != 0x00){
 			Button_on = 1;
 		} else {
-			Button_on = 0;
+		Button_on = 0;
 		}
 		currentTic = tcnt0_ticks;
-	//}
 }
