@@ -27,10 +27,12 @@ void step_clockwise(void);
 
 
 
+/*	set the UBRR0 register to BAUDREG (12 for 38.4k baudrate) */
+#define F_CPU 8000000L		//Internal Calibrated RC Oscillator 8MHz
+#define BAUDRATE 38400L			//from bluetooth datasheet
+#define BAUDREG ((F_CPU)/(BAUDRATE*16UL)-1) 
 
-#define F_CPU 8000000L
-#define BAUD 96900
-#define BAUDRATE ((F_CPU)/(BAUD*16UL)-1)
+
 
 /* functional code	*/
 int main(void)
@@ -61,13 +63,13 @@ void initialise(void){
 	sei();
 	srand(get_tcnt0_ticks());
 
-	USART_init(BAUDRATE);
+	USART_init(BAUDREG);
 	
 	//init_step();
 
 
 	while(1){
-		//PORTA = (1<<PORTA0);
+
 
 		if(get_button_() == 0){
 				PORTB = (1<<PORTB1);

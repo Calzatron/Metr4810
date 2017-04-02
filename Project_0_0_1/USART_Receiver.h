@@ -14,6 +14,8 @@
 
 void USART_init(unsigned int ubrr);
 
+uint8_t input(void);
 
+void output(uint8_t serialOut);
 
 #endif /* USART_RECEIVER_H_ */
