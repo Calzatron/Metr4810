@@ -17,6 +17,8 @@
 #include "tcnt0.h"
 #include "Motors.h"
 #include "USART_Receiver.h"
+#include "tcnt2.h"
+
 
 /*	function declarations	*/
 void initialise(void);
@@ -50,15 +52,20 @@ int main(void)
 
 
 void initialise(void){
+		
+		
 	
 
 	DDRB = 0xFF;
 	DDRA = 0xFF;
 
-	DDRD |= (1<<PORTD7)|(1<<PORTD6);
-	DDRC = 0xFF;
+	DDRC = 0x00;
 
-	init_tcnt0();
+
+	pwm_initialiser();
+	//init_tcnt0();
+	
+	
 	//set Global Interrupt Enable flag
 	sei();
 	srand(get_tcnt0_ticks());
@@ -67,10 +74,13 @@ void initialise(void){
 	
 	//init_step();
 
+	
 
+	
+	
 	while(1){
 
-
+		/*
 		if(get_button_() == 0){
 				PORTB = (1<<PORTB1);
 				PORTA = (0<<PORTA0);
@@ -79,7 +89,7 @@ void initialise(void){
 		else{
 				PORTB = (0<<PORTB1);
 				PORTA = (1<<PORTA0);
-		}
+		}*/
 		
 	}
 
