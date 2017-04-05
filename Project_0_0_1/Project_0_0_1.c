@@ -17,6 +17,8 @@
 #include "tcnt0.h"
 #include "Motors.h"
 #include "USART_Receiver.h"
+#include "tcnt2.h"
+
 
 /*	function declarations	*/
 void initialise(void);
@@ -27,10 +29,12 @@ void step_clockwise(void);
 
 
 
+/*	set the UBRR0 register to BAUDREG (12 for 38.4k baudrate) */
+#define F_CPU 8000000L		//Internal Calibrated RC Oscillator 8MHz
+#define BAUDRATE 38400L			//from bluetooth datasheet
+#define BAUDREG ((F_CPU)/(BAUDRATE*16UL)-1) 
 
-#define F_CPU 8000000L
-#define BAUD 96900
-#define BAUDRATE ((F_CPU)/(BAUD*16UL)-1)
+
 
 /* functional code	*/
 int main(void)
@@ -48,27 +52,35 @@ int main(void)
 
 
 void initialise(void){
+		
+		
 	
 
 	DDRB = 0xFF;
 	DDRA = 0xFF;
 
-	DDRD |= (1<<PORTD7)|(1<<PORTD6);
-	DDRC = 0xFF;
+	DDRC = 0x00;
 
-	init_tcnt0();
+
+	pwm_initialiser();
+	//init_tcnt0();
+	
+	
 	//set Global Interrupt Enable flag
 	sei();
 	srand(get_tcnt0_ticks());
 
-	USART_init(BAUDRATE);
+	USART_init(BAUDREG);
 	
 	//init_step();
 
+	
 
+	
+	
 	while(1){
-		//PORTA = (1<<PORTA0);
 
+		/*
 		if(get_button_() == 0){
 				PORTB = (1<<PORTB1);
 				PORTA = (0<<PORTA0);
@@ -77,7 +89,7 @@ void initialise(void){
 		else{
 				PORTB = (0<<PORTB1);
 				PORTA = (1<<PORTA0);
-		}
+		}*/
 		
 	}
 
