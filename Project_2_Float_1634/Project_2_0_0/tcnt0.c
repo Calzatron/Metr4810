@@ -19,26 +19,46 @@
 // counter incrementing on OCRA
 static volatile uint32_t tcnt0_ticks;
 
+// variables used for checking if button is pressed
+static volatile uint8_t Button_on;
 
-void init_tcnt0(void){
+
+void init_tcnt0(uint8_t fast_mode){
+	/* initialises 8-bit timer to output compare at f(clk)/64 and OCRA @ 124 */
 	/*	Ftimer = fclk / (2*N*(1+OCRn)) */
-	
+	 
+	 //set button to be not pushed
+	 Button_on = 0;
+
 	// set global counter
 	tcnt0_ticks = 0L;
 	
-	TCNT0 = 0;
-	OCR0A = 79;
-	
-	TCCR0A = (0<<COM0A0)|(0<<COM0A1)|(0<<COM0B0)|(0<<COM0B1);		// leave the functionality of I/O pins OC0A alone
-	TCCR0A |= (1<<WGM01);											// Compare match to OCRA as Max
-	TCCR0B = (0<<CS01)|(0<<CS00);									// 1 pre-scaler
-	
-	TIMSK |= (1<<OCIE0A);											// interrupt on compare match
-	
-	TIFR &= (1<<OCF0A);												// no comparison initially
-	
-}
+	 // set timer / counter
+	 TCNT0 = 0;
+	 
+	 // set output compare resgister; value to execute ISR
+	 //OCR0A = 79; // between 1 and 255
+	 if (fast_mode){
+		 OCR0A = 79;
+	 } else {
+		OCR0A = 124;
+	 }
 
+	TCCR0A = (1<<WGM01);											// Compare match to OCRA as Max
+	
+	 // set the timer to update at a fraction of a clock cycle
+	 if (fast_mode){
+		 TCCR0B = (1<<CS00);	// set to f(clk) / 1
+	} else {
+		 TCCR0B = (1<<CS01)|(1<<CS00);	// set to f(clk) / 64
+	 }
+	
+	 // timer/counter 0 interrupt mask register - enable OCR0A as output compare register, only works if OCF0A is set in TIFR0
+	 TIMSK |= (1<<OCIE0A);
+	 
+	 // if it isn't already, clear the interrupt output compare flag by writing a 1 to OCF0A; switches when TCNT0 matches OCR0A
+	 TIFR &= (1<<OCF0A);
+}
 
 uint32_t get_tcnt0_ticks(void) {
 	/* internal reference clock, times how long the system has been on for	*/
@@ -51,10 +71,7 @@ uint32_t get_tcnt0_ticks(void) {
 	return return_value;
 }
 
-
-
-ISR (TIMER0_COMPA_vect){
-	
-	tcnt0_ticks++;
-
-}
+ ISR(TIMER0_COMPA_vect) {
+	 /* Increment our clock tick count, check if pin value has changed */
+	 tcnt0_ticks++;
+ }

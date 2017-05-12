@@ -16,6 +16,9 @@ void init_tcnt0(void);
  */
 uint32_t get_tcnt0_ticks(void);
 
+uint8_t get_button_(void);
+
+ISR(TIMER0_COMPA_vect);
 
 
 #endif /* TCNT0_H_ */

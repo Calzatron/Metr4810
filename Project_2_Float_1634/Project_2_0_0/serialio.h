@@ -1,13 +1,20 @@
 /*
- * USART0_.h
+ * serialio.h
  *
- * Created: 17/04/2017 8:09:28 PM
- *  Author: s4357594
- */ 
+ * Author: Peter Sutton
+ * 
+ * Module to allow standard input/output routines to be used via 
+ * serial port 0. The init_serial_stdio() method must be called before
+ * any standard IO methods (e.g. printf). We use interrupt-based serial
+ * IO and a circular buffer to store output messages. (This allows us 
+ * to print many characters at once to the buffer and have them 
+ * output by the UART as speed permits.) Interrupts must be enabled 
+ * globally for this module to work (after init_serial_stdio() is called).
+ *
+ */
 
-
-#ifndef USART0__H_
-#define USART0__H_
+#ifndef SERIALIO_H_
+#define SERIALIO_H_
 
 #include <stdint.h>
 
@@ -28,6 +35,4 @@ int8_t serial_input_available(void);
  */
 void clear_serial_input_buffer(void);
 
-
-
-#endif /* USART0__H_ */
+#endif /* SERIALIO_H_ */
