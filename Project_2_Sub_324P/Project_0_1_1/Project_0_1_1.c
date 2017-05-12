@@ -44,41 +44,61 @@ int main(void) {
 	
 	info* info_ptr = makeInfo();
 	initialise(info_ptr);
+	DDRA |= (1<<PORTA0);
+	PORTA |= (1<<PORTA0);
 	
 	while(1) {
 		if(serial_input_available()){
 			input(info_ptr);
 		}
-		OCR2A = 255 * (info_ptr->pwmSpeed/100);
-		OCR2B = 255 * (info_ptr->pwmSpeed/100);		
-		
+		if (info_ptr->motorAct){
+			OCR2A = (255 * info_ptr->pwmSpeed)/100;
+			OCR2B = (255 * info_ptr->pwmSpeed)/100;
+			info_ptr->motorAct = 0;
+			info_ptr->stupidCount = 0;
+		}
 		if (info_ptr->stopCommand){
 			/* stop everything */
 			PORTD &= ~(1<<PORTD2);
 			PORTD &= ~(1<<PORTD3);
-			PORTC &= ~(1<<PORTC6);
-			PORTC &= ~(1<<PORTC7);
+			PORTC &= ~(1<<PORTC0);
+			PORTC &= ~(1<<PORTC1);
 			if ((info_ptr->stepAct == 'A')||(info_ptr->stepAct == 'R')){
 				hold_step();
 				info_ptr->stepAct = '\0';
 			}
 			info_ptr->camera = 0;
-			
-			
 			info_ptr->stopCommand = 0;
-		} else if ((info_ptr->stepAct == 'A')|(info_ptr->stepAct == 'R')){
-			uint16_t current = current_step();
-			for (int i = 0; i < 4; i++){
-				current = current_step();
-				if ((current > info_ptr->maxStep) || (current <= 0)){
-					info_ptr->stepAct = '\0';
-					hold_step();
-					break;
-				} else {
+			info_ptr->stupidCount = 0;
+		} else if ((info_ptr->stepAct == 'A')||(info_ptr->stepAct == 'R')){
+			int16_t current = current_step();
+			char buffer[20];
+			sprintf(buffer, "step: %d %d %c\n", current, info_ptr->stepSpeed, info_ptr->stepAct);
+			fputs(buffer, stdout);
+			while ((info_ptr->stepSpeed < 0) && (info_ptr->stepAct == 'R') && (current >= info_ptr->maxStep)){
 					step(info_ptr);
-				}
+					current = current_step();
 			}
-			
+			while ((info_ptr->stepSpeed > 0) && (info_ptr->stepAct == 'A') && (current <= 0)){
+				step(info_ptr);
+				current = current_step();
+			}
+			while ((current < info_ptr->maxStep) && (current >= 0)){
+				if (serial_input_available()){
+					char in = fgetc(stdin);
+					if (in == ' '){
+						info_ptr->stepAct = '\0';
+						hold_step();
+						fputs("canceled\n", stdout);
+						break;
+					}
+				}
+				step(info_ptr);
+				current = current_step();				
+			}
+			fputs("end step\n", stdout);
+			info_ptr->stepAct = '\0';
+			info_ptr->stupidCount = 0;
 		} else if (info_ptr->camera != 0){
 			uint8_t pos = OCR0A;
 			pos += info_ptr->camera;
@@ -89,9 +109,8 @@ int main(void) {
 			}
 			/*	adjust camera position */
 			OCR0A = pos;
+			info_ptr->stupidCount = 0;
 		}
-		
-		
 		//TODO:: Please write your application code
 	}
 }
@@ -117,32 +136,32 @@ void input(info* info_ptr){
 	switch(c){
 		
 		case 'a' :
-			//turn left
+			// turn left
 			PORTD &= ~(1<<PORTD2);
 			PORTD |= (1<<PORTD3);
-			PORTC |= (1<<PORTC6);
-			PORTC &= ~(1<<PORTC7);
+			PORTC |= (1<<PORTC0);
+			PORTC &= ~(1<<PORTC1);
 			break;
 		case 's' :
-			//backwards
+			// backwards
 			PORTD &= ~(1<<PORTD2);
 			PORTD |= (1<<PORTD3);
-			PORTC &= ~(1<<PORTC6);
-			PORTC |= (1<<PORTC7);
+			PORTC &= ~(1<<PORTC0);
+			PORTC |= (1<<PORTC1);
 			break;
 		case 'd' :
-			//turn right
+			// turn right
 			PORTD |= (1<<PORTD2);
 			PORTD &= ~(1<<PORTD3);
-			PORTC &= ~(1<<PORTC6);
-			PORTC |= (1<<PORTC7);
+			PORTC &= ~(1<<PORTC0);
+			PORTC |= (1<<PORTC1);
 			break;
 		case 'w' :
 			// forward
 			PORTD |= (1<<PORTD2);
 			PORTD &= ~(1<<PORTD3);
-			PORTC |= (1<<PORTC6);
-			PORTC &= ~(1<<PORTC7);
+			PORTC |= (1<<PORTC0);
+			PORTC &= ~(1<<PORTC1);
 			break;
 		case 'r' :
 			// release claw
@@ -158,7 +177,7 @@ void input(info* info_ptr){
 			fputc('+', stdout);
 			break;
 		case '-' :
-			//lower
+			// lower
 			fputc('_', stdout);
 			break;
 		case 'e' :
@@ -176,31 +195,38 @@ void input(info* info_ptr){
 			if (info_ptr->stepSpeed > 0){
 					info_ptr->stepSpeed = -info_ptr->stepSpeed;
 			}
-			/************sends negative to activate winch *				******/
+			/************sends negative to activate winch *******/
 			sprintf(buffer, "retract %d\n", info_ptr->stepSpeed);
 			fputs(buffer, stdout);
 			info_ptr->stepAct = 'R';
 			break;
 		case '`' :
 			info_ptr->pwmSpeed = 0;
+			info_ptr->motorAct = 1;
 			break;
 		case '0' :
 			info_ptr->pwmSpeed = 0;
+			info_ptr->motorAct = 1;
 			break;
 		case '1' :
 			info_ptr->pwmSpeed = 20;
+			info_ptr->motorAct = 1;
 			break;
 		case '2' :
 			info_ptr->pwmSpeed = 40;
+			info_ptr->motorAct = 1;
 			break;
 		case '3' :
 			info_ptr->pwmSpeed = 60;
+			info_ptr->motorAct = 1;
 			break;
 		case '4' :
 			info_ptr->pwmSpeed = 80;
+			info_ptr->motorAct = 1;
 			break;
 		case '5' :
 			info_ptr->pwmSpeed = 100;
+			info_ptr->motorAct = 1;
 			break;
 		case '[' :
 			speed = info_ptr->stepSpeed - 10;
@@ -223,7 +249,9 @@ void input(info* info_ptr){
 		case ' ' :
 			info_ptr->pwmSpeed = 0;
 			info_ptr->stopCommand = 1;
-			fputc(' ', stdout);
+			info_ptr->motorAct = 0;
+			info_ptr->stepAct = '\0';
+			//fputc(' ', stdout);
 			break;
 		case 'h' :
 			info_ptr->camera = 10;
@@ -232,24 +260,28 @@ void input(info* info_ptr){
 			info_ptr->camera = -10;
 			break;
 		case '?' :
-			// send stop command up
+			// send sense command up
 			//fputc('?', stdout);
-			info_ptr->stopCommand = 1;
+			//info_ptr->stopCommand = 1;
 			break;
 		case 'o':
 			// restart
-			fputs("Start\n", stdout);
-			custom_delay(100);
+			fputs("started\n", stdout);
 			break;
 		default:
 			fputs("stupid.\n", stdout);
+			++info_ptr->stupidCount;
+			if (info_ptr->stupidCount >= 10){
+					fputc('H', stdout);
+					custom_delay(1000);
+					info_ptr->stupidCount = 0;
+			}
 			break;
 	}
+	/* echo character to next micro */
 	fputc(c, stdout);
 	
 }
-
-
 
 
 
@@ -257,7 +289,7 @@ void initialise(info* info_ptr){
 
 	DDRA = (1<<PORTA0)|(1<<PORTA1);
 	DDRB = (1<<PORTB3);			/*	PWM camera	*/
-	DDRC = (1<<PORTC2)|(1<<PORTC3)|(1<<PORTC4)|(1<<PORTC5)|(1<<PORTC6)|(1<<PORTC7);
+	DDRC = (1<<PORTC2)|(1<<PORTC3)|(1<<PORTC4)|(1<<PORTC5)|(1<<PORTC0)|(1<<PORTC1);
 	DDRD = (1<<PORTD1)|(1<<PORTD4)|(1<<PORTD3)|(1<<PORTD2)|(1<<PORTD5)|(1<<PORTD6)|(1<<PORTD7);
 	DDRD &= ~(1<<PIND0);
 	init_serial_stdio(9600,0);
@@ -265,17 +297,18 @@ void initialise(info* info_ptr){
 	init_tcnt0();				/*	Camera PWM	*/
 	init_tcnt1();				/*	Timer		*/
 	init_tcnt2();				/*	Motor PWM	*/
-	
+	init_step();
 	srand(get_tcnt1_ticks());
 	sei();
 	
+		
 	uint8_t check = 1;
 	while (check){
 			
 		if (serial_input_available()){
 			char start = fgetc(stdin);
 			if (start == 'o'){
-				fputs("start\n", stdout);
+				fputs("Start\n", stdout);
 				check = 0;
 				break;			/*	make sure it exits	*/
 			}
@@ -284,7 +317,7 @@ void initialise(info* info_ptr){
 			
 	}
 
-
+	info_ptr->start = 1;
 	info_ptr->stepAct = '\0';
 	info_ptr->maxStep = 150;
 	info_ptr->camera = 0;

@@ -16,7 +16,7 @@
 #include "Stepper.h"
 #include "tcnt1.h"
 #include "Project.h"
-
+#include "serialio.h"
 
 // Function Declarations
 void step_clockwise(uint8_t time_on);
@@ -25,7 +25,7 @@ void step(info* info_ptr);
 
 
 // Global variables
- uint16_t steps;				// the current step position of the motor
+ int16_t steps;				// the current step position of the motor
  uint8_t phase;				// for controlling position in step
 
  uint8_t BLU;				// port for stepper blue wire
@@ -47,12 +47,12 @@ void step(info* info_ptr);
 	DDRC |= (1<<BLU)|(1<<GRE)|(1<<YEL)|(1<<RED);
  }
 
- uint16_t current_step(void){
+ int16_t current_step(void){
 	/* Returns the number of steps taken from the starting position	
 	*	can be modified to return an angle from origin using gear
 	*	ratio
 	*/
-	uint16_t returnValue = steps;
+	int16_t returnValue = steps;
 	return returnValue;
  }
 
@@ -74,34 +74,34 @@ void release_step(void){
 	*	time taken to move one step
 	*	time_on is between -124 and +124
 	*/
-	if ((steps > info_ptr->maxStep) || (steps < 0)){
-		/*	dont move	*/
-		return;
-	}
+	//if ((steps > info_ptr->maxStep) || (steps < 0)){
+		///*	dont move	*/
+		//return;
+	//}
 	
 	int8_t speed = info_ptr->stepSpeed;
 	uint8_t time_on;
 	if (speed >= 0){
 			if (speed < 10){
-				time_on = 250;
-			} else if (speed < 20) {
-				time_on = 180;
-			} else if (speed < 30) {
-				time_on = 160;
-			} else if (speed < 40) {
-				time_on = 140;
-			} else if (speed < 50){
-				time_on = 120;
-			} else if (speed < 60) {
 				time_on = 100;
-			} else if (speed < 70){
+			} else if (speed < 20) {
+				time_on = 90;
+			} else if (speed < 30) {
 				time_on = 80;
-			} else if (speed < 80) {
+			} else if (speed < 40) {
+				time_on = 70;
+			} else if (speed < 50){
 				time_on = 60;
-			} else if (speed < 90){
+			} else if (speed < 60) {
+				time_on = 50;
+			} else if (speed < 70){
 				time_on = 40;
-			} else {
+			} else if (speed < 80) {
+				time_on = 30;
+			} else if (speed < 90){
 				time_on = 20;
+			} else {
+				time_on = 10;
 			}
 			step_clockwise(time_on);
 	} else {
@@ -148,28 +148,32 @@ void release_step(void){
 	 if(phase == 0){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (0<<BLU)|(1<<GRE)|(1<<YEL)|(0<<RED);
+			 PORTC |= (1<<GRE)|(1<<YEL);
+			 PORTC &= ~((1<<BLU)|(1<<RED));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 1){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (0<<BLU)|(1<<GRE)|(0<<YEL)|(1<<RED);
+			 PORTC |= (1<<GRE)|(1<<RED);
+			 PORTC &= ~((1<<BLU)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 2){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (1<<BLU)|(0<<GRE)|(0<<YEL)|(1<<RED);
+			 PORTC |= (1<<BLU)|(1<<RED);
+			 PORTC &= ~((1<<GRE)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 3){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (1<<BLU)|(0<<GRE)|(1<<YEL)|(0<<RED);
+			 PORTC |= (1<<BLU)|(1<<YEL);
+			 PORTC &= ~((1<<GRE)|(1<<RED));
 		 }
 		 phase = 0;
 	 }
@@ -185,28 +189,32 @@ void release_step(void){
 	 if(phase == 0){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (1<<BLU)|(0<<GRE)|(1<<YEL)|(0<<RED);
+			 PORTC |= (1<<BLU)|(1<<YEL);
+			 PORTC &= ~((1<<GRE)|(1<<RED));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 1){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (1<<BLU)|(0<<GRE)|(0<<YEL)|(1<<RED);
+			 PORTC |= (1<<BLU)|(1<<RED);
+			 PORTC &= ~((1<<GRE)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 2){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (0<<BLU)|(1<<GRE)|(0<<YEL)|(1<<RED);
+			 PORTC |= (1<<GRE)|(1<<RED);
+			 PORTC &= ~((1<<BLU)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 3){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
-			 PORTC = (0<<BLU)|(1<<GRE)|(1<<YEL)|(0<<RED);
+			 PORTC |= (1<<GRE)|(1<<YEL);
+			 PORTC &= ~((1<<BLU)|(1<<RED));
 		 }
 		 phase = 0;
 	 }

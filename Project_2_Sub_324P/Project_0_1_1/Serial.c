@@ -136,9 +136,9 @@ static int uart_put_char(char c, FILE* stream) {
 	 * If the character is \n, we output \r (carriage return)
 	 * also.
 	*/
-	if(c == '\n') {
-		uart_put_char('\r', stream);
-	}
+	//if(c == '\n') {
+		//uart_put_char('\r', stream);
+	//}
 	
 	/* If the buffer is full and interrupts are disabled then we
 	 * abort - we don't output the character since the buffer will

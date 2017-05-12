@@ -19,7 +19,9 @@ typedef struct info {
 	char stepAct;
 	uint8_t stopCommand;
 	int8_t camera;
-	
+	uint8_t start;
+	uint8_t motorAct;
+	uint8_t stupidCount;
 } info;
 
 

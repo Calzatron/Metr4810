@@ -14,7 +14,7 @@
 
 void init_step(void);
 
-uint16_t current_step(void);
+int16_t current_step(void);
 
 void step(info* info_ptr);
 
