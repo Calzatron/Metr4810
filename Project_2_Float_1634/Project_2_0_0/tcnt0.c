@@ -11,24 +11,16 @@
  #include <avr/pgmspace.h>			//for storing / accessing data in flash program instead of SRAM -> variable manipulation
  #include <stdio.h>					//input / output
  #include <stdlib.h>					//standard function library; malloc / sort / rand etc
- //#include <util/delay.h>
- 
  #include "tcnt0.h"
 
 
 // counter incrementing on OCRA
 static volatile uint32_t tcnt0_ticks;
 
-// variables used for checking if button is pressed
-static volatile uint8_t Button_on;
-
 
 void init_tcnt0(uint8_t fast_mode){
 	/* initialises 8-bit timer to output compare at f(clk)/64 and OCRA @ 124 */
 	/*	Ftimer = fclk / (2*N*(1+OCRn)) */
-	 
-	 //set button to be not pushed
-	 Button_on = 0;
 
 	// set global counter
 	tcnt0_ticks = 0L;
@@ -60,6 +52,7 @@ void init_tcnt0(uint8_t fast_mode){
 	 TIFR &= (1<<OCF0A);
 }
 
+
 uint32_t get_tcnt0_ticks(void) {
 	/* internal reference clock, times how long the system has been on for	*/
 	uint8_t interrupts_on = bit_is_set(SREG, SREG_I);
@@ -70,6 +63,7 @@ uint32_t get_tcnt0_ticks(void) {
 	}
 	return return_value;
 }
+
 
  ISR(TIMER0_COMPA_vect) {
 	 /* Increment our clock tick count, check if pin value has changed */

@@ -10,8 +10,6 @@
  #include <avr/pgmspace.h>			//for storing / accessing data in flash program instead of SRAM -> variable manipulation
  #include <stdio.h>					//input / output
  #include <stdlib.h>					//standard function library; malloc / sort / rand etc
- //#include <util/delay.h>
- //#include <string.h>
 #include "tcnt1.h"
 
 

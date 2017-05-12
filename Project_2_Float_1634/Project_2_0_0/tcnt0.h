@@ -9,16 +9,13 @@
 #ifndef TCNT0_H_
 #define TCNT0_H_
 
-void init_tcnt0(void);
+void init_tcnt0(uint8_t fast_mode);
 
 /* Return the current clock tick value - milliseconds since the timer was
  * initialised.
  */
+
 uint32_t get_tcnt0_ticks(void);
-
-uint8_t get_button_(void);
-
-ISR(TIMER0_COMPA_vect);
 
 
 #endif /* TCNT0_H_ */
