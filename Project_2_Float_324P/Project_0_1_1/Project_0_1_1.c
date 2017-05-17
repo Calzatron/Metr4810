@@ -160,6 +160,7 @@ void initialise(info* info_ptr){
 	
 }
 
+
 void custom_delay(uint32_t ticks){
 	/*	Custom delay function, waits for timer to change by 'ticks'
 	*	note that tcnt0 updates every 0.002 seconds */

@@ -41,6 +41,7 @@ void init_tcnt0(uint8_t fast_mode){
 	 // set the timer to update at a fraction of a clock cycle
 	 if (fast_mode){
 		 TCCR0B = (1<<CS00);	// set to f(clk) / 1
+		 TCCR0B &= ~(1<<CS01);
 	} else {
 		 TCCR0B = (1<<CS01)|(1<<CS00);	// set to f(clk) / 64
 	 }

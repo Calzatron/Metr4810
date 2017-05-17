@@ -70,22 +70,25 @@ int main(void) {
 			char in = fgetc(stdin);
 			if (in == '+'){
 				/*	winch up	*/
-				PORTC |= (1<<PORTC0);
-				PORTC &= ~(1<<PORTC1);
-				OCR1A = 250;
+				PORTA |= (1<<PORTA4);
+				PORTA &= ~(1<<PORTA3);
+				OCR1A = 60000;
+
 				sprintf(buffer, "lifting\n");
-				} else if (in == '_'){
+			} else if (in == '_'){
 				/*	winch down	*/
-				OCR1A = 250;
-				PORTC |= (1<<PORTC1);
-				PORTC &= ~(1<<PORTC0);
+				OCR1A = 60000;
+				OCR1B = 60000;
+				PORTA |= (1<<PORTA3);
+				PORTA &= ~(1<<PORTA4);
 				sprintf(buffer, "lowering\n");
-				} else if (in == ' '){
+			} else if (in == ' '){
 				/*	stop operation	*/
-				PORTC = 0x00;
+				PORTA &= ~(1<<PORTA3);
+				PORTA &= ~(1<<PORTA4);
 				OCR1A = 0;
 				//fputc('?', stdout);
-				} else if (in == '?'){
+			} else if (in == '?'){
 				sprintf(buffer, "sensing\n");
 				do_sonic(info_ptr);
 				char buffer0[20];
@@ -96,13 +99,13 @@ int main(void) {
 				uint8_t timer = OCR0A;
 				fputs("timer: ", stdout);
 				ltoa(timer, buffer3, 10); fputs(buffer3, stdout); fputc('\n',stdout);
-				} else if (in == 'H'){
+			} else if (in == 'H'){
 				PORTA &= ~(1<<PORTA5);
 				custom_delay(1000);
 				PORTA |= (1<<PORTA5);
 			}
 			/*	echo characters back to terminal	*/
-			if ((in != '_') && (in != '=') && (in != 'S')){
+			if ((in != '_') && (in != '=')){
 				fputc(in, stdout);
 			}
 		}
@@ -138,10 +141,30 @@ void initialise(info* info_ptr){
 	srand(get_tcnt0_ticks());
 	sei();
 
-	custom_delay(100);
 
 	/* wait for communication to start from host */
 	custom_delay(100);
+	
+	/****************************************************************************************************************************************************************/
+	//while(1){
+		//if(serial_input_available()){
+				//char t = fgetc(stdin);
+				//custom_delay(500);
+				//fputc(t, stdout);
+		//}
+		//
+			////PORTB |= (1<<PORTB0);
+			////custom_delay(10);
+			////PORTB &= ~(1<<PORTB0);
+			////custom_delay(10);
+			////PORTB |= (1<<PORTB0);
+			////custom_delay(10);
+			////PORTB &= ~(1<<PORTB0);
+			////custom_delay(10);
+	//}
+	
+	/****************************************************************************************************************************************************************/
+	
 	uint8_t check = 0;
 	while (check < 6){
 		if (serial_input_available()){

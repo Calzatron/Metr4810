@@ -56,8 +56,8 @@ void pwm_initialiser(void){
 	// set timer / counter
 	
 	TCNT1 = 0;
-	OCR1A = 0;
-	OCR1B = 0;
+	OCR1A = 60000;
+	OCR1B = 60000;
 	
 	DDRA |= (1<<PORTA6);
 	DDRB |= (1<<PORTB3);

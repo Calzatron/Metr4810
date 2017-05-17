@@ -61,8 +61,8 @@ int main(void) {
 			/* stop everything */
 			PORTD &= ~(1<<PORTD2);
 			PORTD &= ~(1<<PORTD3);
-			PORTC &= ~(1<<PORTC0);
-			PORTC &= ~(1<<PORTC1);
+			PORTC &= ~(1<<PORTC6);
+			PORTC &= ~(1<<PORTC7);
 			if ((info_ptr->stepAct == 'A')||(info_ptr->stepAct == 'R')){
 				hold_step();
 				info_ptr->stepAct = '\0';
@@ -83,22 +83,33 @@ int main(void) {
 				step(info_ptr);
 				current = current_step();
 			}
-			while ((current < info_ptr->maxStep) && (current >= 0)){
-				if (serial_input_available()){
-					char in = fgetc(stdin);
-					if (in == ' '){
-						info_ptr->stepAct = '\0';
-						hold_step();
-						fputs("canceled\n", stdout);
-						break;
+			/****************************************************************/
+			//for (int i = 0; i < 10; i++){
+			/***************************************************************/
+				while ((current < info_ptr->maxStep) && (current >= 0)){
+					if (serial_input_available()){
+						char in = fgetc(stdin);
+						if (in == ' '){
+							info_ptr->stepAct = '\0';
+							hold_step();
+							fputs("canceled\n", stdout);
+							break;
+						}
 					}
+					step(info_ptr);
+					current = current_step();				
 				}
-				step(info_ptr);
-				current = current_step();				
-			}
+			/*************************************************************/
+			//}
+			current = current_step();
+			char buffer1[30];
+			sprintf(buffer1, "step POS: %d %d %c\n", current, info_ptr->stepSpeed, info_ptr->stepAct);
+			fputs(buffer1, stdout);
+			/****************************************************************/
 			fputs("end step\n", stdout);
 			info_ptr->stepAct = '\0';
 			info_ptr->stupidCount = 0;
+			hold_step();
 		} else if (info_ptr->camera != 0){
 			uint8_t pos = OCR0A;
 			pos += info_ptr->camera;
@@ -139,29 +150,29 @@ void input(info* info_ptr){
 			// turn left
 			PORTD &= ~(1<<PORTD2);
 			PORTD |= (1<<PORTD3);
-			PORTC |= (1<<PORTC0);
-			PORTC &= ~(1<<PORTC1);
+			PORTC |= (1<<PORTC6);
+			PORTC &= ~(1<<PORTC7);
 			break;
 		case 's' :
 			// backwards
 			PORTD &= ~(1<<PORTD2);
 			PORTD |= (1<<PORTD3);
-			PORTC &= ~(1<<PORTC0);
-			PORTC |= (1<<PORTC1);
+			PORTC &= ~(1<<PORTC6);
+			PORTC |= (1<<PORTC7);
 			break;
 		case 'd' :
 			// turn right
 			PORTD |= (1<<PORTD2);
 			PORTD &= ~(1<<PORTD3);
-			PORTC &= ~(1<<PORTC0);
-			PORTC |= (1<<PORTC1);
+			PORTC &= ~(1<<PORTC6);
+			PORTC |= (1<<PORTC7);
 			break;
 		case 'w' :
 			// forward
 			PORTD |= (1<<PORTD2);
 			PORTD &= ~(1<<PORTD3);
-			PORTC |= (1<<PORTC0);
-			PORTC &= ~(1<<PORTC1);
+			PORTC |= (1<<PORTC6);
+			PORTC &= ~(1<<PORTC7);
 			break;
 		case 'r' :
 			// release claw
@@ -259,6 +270,15 @@ void input(info* info_ptr){
 		case 'g' :
 			info_ptr->camera = -10;
 			break;
+		case 'l' :
+			if (PORTA && (1<<PORTA1)){
+				PORTA &= ~(1<<PORTA1);
+				} else {
+				PORTA |= (1<<PORTA1);
+			}
+			break;
+		case 'L' :
+			PORTA |= (1<<PORTA1);
 		case '?' :
 			// send sense command up
 			//fputc('?', stdout);
@@ -289,10 +309,10 @@ void initialise(info* info_ptr){
 
 	DDRA = (1<<PORTA0)|(1<<PORTA1);
 	DDRB = (1<<PORTB3);			/*	PWM camera	*/
-	DDRC = (1<<PORTC2)|(1<<PORTC3)|(1<<PORTC4)|(1<<PORTC5)|(1<<PORTC0)|(1<<PORTC1);
+	DDRC = (1<<PORTC2)|(1<<PORTC3)|(1<<PORTC4)|(1<<PORTC5)|(1<<PORTC6)|(1<<PORTC7);
 	DDRD = (1<<PORTD1)|(1<<PORTD4)|(1<<PORTD3)|(1<<PORTD2)|(1<<PORTD5)|(1<<PORTD6)|(1<<PORTD7);
 	DDRD &= ~(1<<PIND0);
-	init_serial_stdio(9600,0);
+	init_serial_stdio(9600,0);											//////////////////////////////////////////////////////////////////////////////////////////
 
 	init_tcnt0();				/*	Camera PWM	*/
 	init_tcnt1();				/*	Timer		*/
@@ -301,6 +321,31 @@ void initialise(info* info_ptr){
 	srand(get_tcnt1_ticks());
 	sei();
 	
+	/****************************************************************************************************************************************************************/
+	//info_ptr->stepSpeed = 60;
+	//info_ptr->maxStep = 5000;
+	//PORTD |= (1<<PORTD4)|(1<<PORTD5);	//enable stepper
+	//while(1){
+		//step(info_ptr);
+		////
+		////if(serial_input_available()){
+			////char t = fgetc(stdin);
+			////
+			////fputc(t, stdout);
+			////fputc('f', stdout);
+		////}
+		////
+		//////PORTD |= (1<<PORTD1);
+		//////custom_delay(10);
+		//////PORTD &= ~(1<<PORTD1);
+		//////custom_delay(10);
+		//////PORTD |= (1<<PORTD1);
+		//////custom_delay(10);
+		//////PORTD &= ~(1<<PORTD1);
+		//////custom_delay(10);
+	//}
+		
+	/****************************************************************************************************************************************************************/
 		
 	uint8_t check = 1;
 	while (check){
@@ -323,7 +368,7 @@ void initialise(info* info_ptr){
 	info_ptr->camera = 0;
 	info_ptr->pwmSpeed = 0;
 	PORTD |= (1<<PORTD4)|(1<<PORTD5);	//enable stepper
-	
+
 }
 
 

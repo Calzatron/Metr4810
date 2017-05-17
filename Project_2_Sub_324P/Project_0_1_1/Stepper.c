@@ -44,8 +44,14 @@ void step(info* info_ptr);
 	YEL = PORTC2;
 	RED = PORTC3;
 
+	//BLU = PORTC2;
+	//GRE = PORTC3;
+	//YEL = PORTC4;
+	//RED = PORTC5;
+
 	DDRC |= (1<<BLU)|(1<<GRE)|(1<<YEL)|(1<<RED);
  }
+ 
 
  int16_t current_step(void){
 	/* Returns the number of steps taken from the starting position	

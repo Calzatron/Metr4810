@@ -241,6 +241,7 @@ ISR(USART0_UDRE_vect)
 		
 		/* Output the character via the UART */
 		UDR0 = c;
+		//UDR0 = 0x00;
 	} else {
 		/* No data in the buffer. We disable the UART Data
 		 * Register Empty interrupt because otherwise it 
