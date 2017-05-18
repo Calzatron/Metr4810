@@ -72,13 +72,19 @@ int main(void) {
 				/*	winch up	*/
 				PORTA |= (1<<PORTA4);
 				PORTA &= ~(1<<PORTA3);
-				OCR1A = 60000;
-
+				if (OCR1B > 250){
+					OCR1B = 100;
+				} else if (OCR1B > 21){
+					OCR1B -= 20;
+				}
 				sprintf(buffer, "lifting\n");
 			} else if (in == '_'){
 				/*	winch down	*/
-				OCR1A = 60000;
-				OCR1B = 60000;
+				if (OCR1B > 250){
+					OCR1B = 100;
+				} else if (OCR1B > 51){
+					OCR1B -= 20;
+				}
 				PORTA |= (1<<PORTA3);
 				PORTA &= ~(1<<PORTA4);
 				sprintf(buffer, "lowering\n");
@@ -86,7 +92,7 @@ int main(void) {
 				/*	stop operation	*/
 				PORTA &= ~(1<<PORTA3);
 				PORTA &= ~(1<<PORTA4);
-				OCR1A = 0;
+				OCR1B = 254;
 				//fputc('?', stdout);
 			} else if (in == '?'){
 				sprintf(buffer, "sensing\n");
@@ -143,24 +149,22 @@ void initialise(info* info_ptr){
 
 
 	/* wait for communication to start from host */
-	custom_delay(100);
 	
+	custom_delay(1000);
 	/****************************************************************************************************************************************************************/
+	//custom_delay(2000);
+//
+	//PORTA |= (1<<PORTA3);
+	//PORTA &= ~(1<<PORTA4);
+	//PORTC |= (1<<PORTC2);
+	//PORTC &= ~(1<<PORTC3);
+//
 	//while(1){
-		//if(serial_input_available()){
-				//char t = fgetc(stdin);
-				//custom_delay(500);
-				//fputc(t, stdout);
+		//if (OCR1B > 250){
+			//break;
 		//}
-		//
-			////PORTB |= (1<<PORTB0);
-			////custom_delay(10);
-			////PORTB &= ~(1<<PORTB0);
-			////custom_delay(10);
-			////PORTB |= (1<<PORTB0);
-			////custom_delay(10);
-			////PORTB &= ~(1<<PORTB0);
-			////custom_delay(10);
+		//OCR1B += 10;
+		//custom_delay(500);
 	//}
 	
 	/****************************************************************************************************************************************************************/

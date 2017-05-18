@@ -322,29 +322,25 @@ void initialise(info* info_ptr){
 	sei();
 	
 	/****************************************************************************************************************************************************************/
-	//info_ptr->stepSpeed = 60;
-	//info_ptr->maxStep = 5000;
-	//PORTD |= (1<<PORTD4)|(1<<PORTD5);	//enable stepper
-	//while(1){
-		//step(info_ptr);
-		////
-		////if(serial_input_available()){
-			////char t = fgetc(stdin);
-			////
-			////fputc(t, stdout);
-			////fputc('f', stdout);
-		////}
-		////
-		//////PORTD |= (1<<PORTD1);
-		//////custom_delay(10);
-		//////PORTD &= ~(1<<PORTD1);
-		//////custom_delay(10);
-		//////PORTD |= (1<<PORTD1);
-		//////custom_delay(10);
-		//////PORTD &= ~(1<<PORTD1);
-		//////custom_delay(10);
-	//}
-		
+	info_ptr->stepSpeed = 90;
+	info_ptr->maxStep = 5000;
+	
+	PORTD |= (1<<PORTD4)|(1<<PORTD5);	//enable stepper
+	while(1){
+		//PORTC |= (1<<PORTC3);
+		//PORTC |= (1<<PORTC2);
+		//PORTC |= (1<<PORTC4);
+		//PORTC |= (1<<PORTC5);
+		//custom_delay(500);
+		//PORTC &= ~(1<<PORTC2);
+		//PORTC &= ~(1<<PORTC3);
+		//PORTC &= ~(1<<PORTC4);
+		//PORTC &= ~(1<<PORTC5);
+		//custom_delay(500);
+		step(info_ptr);
+
+	}
+
 	/****************************************************************************************************************************************************************/
 		
 	uint8_t check = 1;

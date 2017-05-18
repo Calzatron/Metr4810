@@ -52,27 +52,51 @@ void pwm_initialiser(void){
    Mode        = Fast PWM
    PWM Output  = Non Inverted
 
-   */
+*/
+   
+   
+   
+//DDRB=0x07;         // set OC1A pin output (among others)
+
+// Timer 1
+//TCNT1=0;           // clear counter
+//ICR1=36363;        // 439.9956 Hz from 16 MHz clock
+//
+//TCCR1A= 0b10000011; // non-inverting, fast PWM
+//TCCR1B= 0b00011001; // fast PWM, full speed
+//
+//OCR1A= 0;         // 1 % strobe
+
+
+
+   
 	// set timer / counter
 	
 	TCNT1 = 0;
-	OCR1A = 60000;
-	OCR1B = 60000;
+	OCR1A = 0;
+	OCR1B = 0;
 	
-	DDRA |= (1<<PORTA6);
-	DDRB |= (1<<PORTB3);
-
-	
+	//Set Initial Timer value
+	TCNT1=0;
+		//set non inverted PWM on OC1A pin
+		//and inverted on OC1B
+	TCCR1A|=(1<<COM1A1)|(1<<COM1B1)|(1<<COM1B0);
+		//set top value to ICR1
+	ICR1 = 0x00FF;
+		//set corrcet phase and frequency PWM mode
+	TCCR1B|=(1<<WGM13);
+	TCCR1B|=(1<<CS11)|(1<<CS10);
 	//TCCR2A |= (1<<COM2A1) | (1<<WGM20);
 	//TCCR2B |= (1<<CS20) | (1<<WGM22);
-	TCCR1A |= (1<<COM1A1) | (COM1B1) | (1<<WGM10);
-	TCCR1B |= (1<<CS10) | (1<<WGM12);
+	//TCCR1A |= (1<<COM1A1) | (1<<COM1B1) | (1<<WGM10);
+	//TCCR1B |= (1<<CS10) | (1<<WGM12);
 	
 	//PRR0 |= (1<<PRTIM2);
 	//TCCR2A |= (1<<COM2A1)|(1<<COM2B1)|(1<<WGM21)|(1<<WGM20);
 	//TCCR2B = 0b00001100;
 	
+	OCR1A = 0x0000;
+	OCR1B = 0x0000;
 	
-	
-	// Use OCR2A to set TOP for PWM
+	// Use OCR1A to set TOP for PWM
 }
