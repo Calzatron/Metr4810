@@ -136,15 +136,18 @@ void release_step(void){
 	}
  }
 
- void increment_step(void){
+/**************************************************************************************swapped increment and decrement so start with claw closed ****************/
+ void decrement_step(void){
 	/* the motor has turned one step, increase the count */
 	++steps;
  }
 
- void decrement_step(void){
+ void increment_step(void){
 	/* the motor has turned back one step, decrease the count */
 	--steps;
  }
+/**************************************************************************************************************************************************************/
+
 
  void step_clockwise(uint8_t time_on){
 	/* turns stepper motor clockwise */

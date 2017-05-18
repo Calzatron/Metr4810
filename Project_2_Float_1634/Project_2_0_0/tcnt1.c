@@ -95,8 +95,8 @@ void pwm_initialiser(void){
 	//TCCR2A |= (1<<COM2A1)|(1<<COM2B1)|(1<<WGM21)|(1<<WGM20);
 	//TCCR2B = 0b00001100;
 	
-	OCR1A = 0x0000;
-	OCR1B = 0x0000;
+	OCR1A = 0x00FF;
+	OCR1B = 0x00FF;
 	
 	// Use OCR1A to set TOP for PWM
 }

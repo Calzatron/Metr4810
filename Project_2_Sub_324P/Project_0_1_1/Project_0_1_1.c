@@ -322,24 +322,24 @@ void initialise(info* info_ptr){
 	sei();
 	
 	/****************************************************************************************************************************************************************/
-	info_ptr->stepSpeed = 90;
-	info_ptr->maxStep = 5000;
-	
-	PORTD |= (1<<PORTD4)|(1<<PORTD5);	//enable stepper
-	while(1){
-		//PORTC |= (1<<PORTC3);
-		//PORTC |= (1<<PORTC2);
-		//PORTC |= (1<<PORTC4);
-		//PORTC |= (1<<PORTC5);
-		//custom_delay(500);
-		//PORTC &= ~(1<<PORTC2);
-		//PORTC &= ~(1<<PORTC3);
-		//PORTC &= ~(1<<PORTC4);
-		//PORTC &= ~(1<<PORTC5);
-		//custom_delay(500);
-		step(info_ptr);
-
-	}
+	//info_ptr->stepSpeed = 90;
+	//info_ptr->maxStep = 5000;
+	//
+	//PORTD |= (1<<PORTD4)|(1<<PORTD5);	//enable stepper
+	//while(1){
+		////PORTC |= (1<<PORTC3);
+		////PORTC |= (1<<PORTC2);
+		////PORTC |= (1<<PORTC4);
+		////PORTC |= (1<<PORTC5);
+		////custom_delay(500);
+		////PORTC &= ~(1<<PORTC2);
+		////PORTC &= ~(1<<PORTC3);
+		////PORTC &= ~(1<<PORTC4);
+		////PORTC &= ~(1<<PORTC5);
+		////custom_delay(500);
+		//step(info_ptr);
+//
+	//}
 
 	/****************************************************************************************************************************************************************/
 		

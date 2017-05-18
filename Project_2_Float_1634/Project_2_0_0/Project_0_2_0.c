@@ -92,7 +92,7 @@ int main(void) {
 				/*	stop operation	*/
 				PORTA &= ~(1<<PORTA3);
 				PORTA &= ~(1<<PORTA4);
-				OCR1B = 254;
+				OCR1B = 0xFF;
 				//fputc('?', stdout);
 			} else if (in == '?'){
 				sprintf(buffer, "sensing\n");
