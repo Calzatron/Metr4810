@@ -22,6 +22,7 @@
 #include "tcnt2.h"
 #include "serialio.h"
 #include "Project.h"
+#include "worm.h"
 
 /*	set the UBRR0 register to BAUDREG (12 for 38.4k baudrate) */
 #define F_CPU 8000000L				//Internal Calibrated RC Oscillator 8MHz
@@ -156,6 +157,8 @@ void input(info* info_ptr){
 	char c = fgetc(stdin);
 	int16_t speed;
 	char buffer[20];
+	uint8_t percent;
+	char in;
 	
 	switch(c){
 		
@@ -292,25 +295,26 @@ void input(info* info_ptr){
 			break;
 		case 'L' :
 			PORTA |= (1<<PORTA1);
-		case ';':
+		case 'j' : 
 			/* move winch backwards	*/
-			uint8_t percent = 60;
-			int8_t reverse = 0;
-			move_worm(percent, reverse);
+			percent = 60;
+			speed = 0;
+			move_worm(percent, speed);
 			while (1) {
 					if(serial_input_available()){
-							char in = fgetc(stdin);
-							char buffer[18];
+							in = fgetc(stdin);
+							//char buffer[18];
 							if (in == ' '){
 								fputs("Winch off\n", stdout);
+								winch_off();
 								break;
-							} else if (in == ';'){
+							} else if (in == 'k'){
 								if ((percent + 10) < 100){
 									percent += 10;
 									sprintf(buffer, "Winch speed %d\n", percent);
 									fputs(buffer, stdout);
-								}	
-							} else if ( in == '\''){
+								}
+							} else if ( in == 'j'){
 								if ((percent -10) >=0){
 									percent -= 10;
 									sprintf(buffer, "Winch speed %d\n", percent);
@@ -318,29 +322,28 @@ void input(info* info_ptr){
 								}
 							}
 					}
-					move_worm(percent, reverse);
+					move_worm(percent, speed);
 			}
 			break;
-		case '\'' :
+		case 'k' : 
 			/* move winch forwards	*/
-			uint8_t percent = 60;
-			int8_t forward = 1;
-			move_worm(percent, forward);
+			percent = 60;
+			speed = 1;
+			move_worm(percent, speed);
 			while (1) {
 				if(serial_input_available()){
-					char in = fgetc(stdin);
-					char buffer[18];
+					in = fgetc(stdin);
 					if (in == ' '){
 						fputs("Winch off\n", stdout);
 						winch_off();
 						break;
-					} else if (in == ';'){
+					} else if (in == 'k'){
 							if ((percent + 10) < 100){
 								percent += 10;
 								sprintf(buffer, "Winch speed %d\n", percent);
 								fputs(buffer, stdout);
 							}
-					} else if ( in == '\''){
+					} else if (in == 'j'){
 							if ((percent -10) >=0){
 								percent -= 10;
 								sprintf(buffer, "Winch speed %d\n", percent);
@@ -348,7 +351,7 @@ void input(info* info_ptr){
 							}
 					}
 				}
-				move_worm(percent, forward);
+				move_worm(percent, speed);
 			}
 			break;
 		case '?' :
