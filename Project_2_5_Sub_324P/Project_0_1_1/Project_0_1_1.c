@@ -136,6 +136,17 @@ int main(void) {
 			OCR0A = pos;
 			info_ptr->stupidCount = 0;
 		}
+		
+		//PORTB |= (1<<PORTB0);
+		//custom_delay(40);
+		if (!(PINB & (1<<PINB1))){
+			worm_off();
+		} else {
+			/*	worm gear hasn't hit button and is free to use in both directions	*/
+			info_ptr->wormCom = '\0';
+				
+		}
+		//PORTB &= ~(1<<PORTB0);
 		//TODO:: Please write your application code
 	}
 }
@@ -287,72 +298,88 @@ void input(info* info_ptr){
 			info_ptr->camera = -10;
 			break;
 		case 'l' :
-			if (PORTA && (1<<PORTA1)){
+			if (PORTA & (1<<PORTA1)){
 				PORTA &= ~(1<<PORTA1);
-				} else {
+			} else {
 				PORTA |= (1<<PORTA1);
 			}
 			break;
 		case 'L' :
 			PORTA |= (1<<PORTA1);
+			break;
 		case 'j' : 
 			/* move winch backwards	*/
+			//PORTB |= (1<<PORTB0);
 			percent = 60;
 			speed = 0;
 			move_worm(percent, speed);
-			while (1) {
-					if(serial_input_available()){
-							in = fgetc(stdin);
-							//char buffer[18];
-							if (in == ' '){
-								fputs("Winch off\n", stdout);
-								winch_off();
-								break;
-							} else if (in == 'k'){
-								if ((percent + 10) < 100){
-									percent += 10;
-									sprintf(buffer, "Winch speed %d\n", percent);
-									fputs(buffer, stdout);
-								}
-							} else if ( in == 'j'){
-								if ((percent -10) >=0){
-									percent -= 10;
-									sprintf(buffer, "Winch speed %d\n", percent);
-									fputs(buffer, stdout);
-								}
-							}
+			while (info_ptr->wormCom != 'j') {
+				if(serial_input_available()){
+					in = fgetc(stdin);
+					//char buffer[18];
+					if (in == ' '){
+						fputs("Worm off\n", stdout);
+						worm_off();
+						break;
+					} else if (in == 'k'){
+						if ((percent + 10) < 100){
+							percent += 10;
+							sprintf(buffer, "Worm speed %d\n", percent);
+							fputs(buffer, stdout);
+						}
+					} else if ( in == 'j'){
+						if ((percent -10) >=0){
+							percent -= 10;
+							sprintf(buffer, "Worm speed %d\n", percent);
+							fputs(buffer, stdout);
+						}
 					}
-					move_worm(percent, speed);
+				}
+				if (!(PINB & (1<<PINB1))){
+						info_ptr->wormCom = 'j';
+						worm_off();
+						break;
+				}
+				move_worm(percent, speed);
 			}
+			//PORTB &= ~(1<<PORTB0);
 			break;
 		case 'k' : 
 			/* move winch forwards	*/
 			percent = 60;
 			speed = 1;
+			//PORTB |= (1<<PORTB0);
 			move_worm(percent, speed);
-			while (1) {
+			while (info_ptr->wormCom != 'k') {
 				if(serial_input_available()){
 					in = fgetc(stdin);
 					if (in == ' '){
-						fputs("Winch off\n", stdout);
-						winch_off();
+						fputs("Worm off\n", stdout);
+						worm_off();
 						break;
 					} else if (in == 'k'){
-							if ((percent + 10) < 100){
-								percent += 10;
-								sprintf(buffer, "Winch speed %d\n", percent);
-								fputs(buffer, stdout);
-							}
+						if ((percent + 10) < 100){
+							percent += 10;
+							sprintf(buffer, "Worm speed %d\n", percent);
+							fputs(buffer, stdout);
+						}
 					} else if (in == 'j'){
-							if ((percent -10) >=0){
-								percent -= 10;
-								sprintf(buffer, "Winch speed %d\n", percent);
-								fputs(buffer, stdout);
-							}
+						if ((percent -10) >=0){
+							percent -= 10;
+							sprintf(buffer, "Worm speed %d\n", percent);
+							fputs(buffer, stdout);
+						}
 					}
+				}
+				
+				if (!(PINB & (1<<PINB1))){
+					info_ptr->wormCom = 'k';
+					worm_off();
+					break;
 				}
 				move_worm(percent, speed);
 			}
+			//PORTB &= ~(1<<PORTB0);
 			break;
 		case '?' :
 			// send sense command up
@@ -383,7 +410,9 @@ void input(info* info_ptr){
 void initialise(info* info_ptr){
 
 	DDRA = (1<<PORTA0)|(1<<PORTA1);
-	DDRB = (1<<PORTB3);			/*	PWM camera	*/
+	DDRB = (1<<PORTB3)|(1<<PORTB0)|(1<<PINB1);			/*	PWM camera, buttons	*/
+	PORTB |= (1<<PORTB1);								/* set button to be high */
+	DDRB &= ~(1<<PORTB1);								/*	make input	*/
 	DDRC = (1<<PORTC2)|(1<<PORTC3)|(1<<PORTC4)|(1<<PORTC5)|(1<<PORTC6)|(1<<PORTC7);
 	DDRD = (1<<PORTD1)|(1<<PORTD4)|(1<<PORTD3)|(1<<PORTD2)|(1<<PORTD5)|(1<<PORTD6)|(1<<PORTD7);
 	DDRD &= ~(1<<PIND0);

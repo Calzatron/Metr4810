@@ -62,24 +62,31 @@ void initialise(void){
 	DDRC = 0x00;
 
 
-	pwm_initialiser();
-	//init_tcnt0();
+	//pwm_initialiser();
+	init_tcnt0();
 	
 	
 	//set Global Interrupt Enable flag
 	sei();
 	srand(get_tcnt0_ticks());
 
-	USART_init(BAUDREG);
+	//USART_init(BAUDREG);
 	
 	//init_step();
 
-	
-
-	
-	
+	DDRD |= (1<<PORTD0)|(1<<PORTD1);
+	//PORTD &= ~(1<<PORTD1);
+	PORTD |= (1<<PORTD1);
+	DDRD &= ~(1<<PORTD1);
+	DDRA = 0xFF;
 	while(1){
-
+		
+		if (PIND & (1<<PIND1)){
+				PORTA = 0xFF;
+		} else {
+				PORTA = 0x00;
+		}
+		
 		/*
 		if(get_button_() == 0){
 				PORTB = (1<<PORTB1);

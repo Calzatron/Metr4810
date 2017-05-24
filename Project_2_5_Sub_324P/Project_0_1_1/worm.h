@@ -11,6 +11,6 @@
 
 
 void move_worm(uint8_t percent, int8_t direction);
-void winch_off(void);
+void worm_off(void);
 
 #endif /* WORM_H_ */
