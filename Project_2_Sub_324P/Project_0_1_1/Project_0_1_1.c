@@ -33,8 +33,8 @@
 info* makeInfo(void);
 void custom_delay(uint32_t ticks);
 void Sensor_input(void);
-void step_clockwise(void);
-void step_clockwise(void);
+//void step_clockwise(void);
+//void step_clockwise(void);
 void initialise(info* info_ptr);
 void input(info* info_ptr);
 
@@ -83,9 +83,6 @@ int main(void) {
 				step(info_ptr);
 				current = current_step();
 			}
-			/****************************************************************/
-			//for (int i = 0; i < 10; i++){
-			/***************************************************************/
 				while ((current < info_ptr->maxStep) && (current >= 0)){
 					if (serial_input_available()){
 						char in = fgetc(stdin);
@@ -99,8 +96,6 @@ int main(void) {
 					step(info_ptr);
 					current = current_step();				
 				}
-			/*************************************************************/
-			//}
 			current = current_step();
 			char buffer1[30];
 			sprintf(buffer1, "step POS: %d %d %c\n", current, info_ptr->stepSpeed, info_ptr->stepAct);
@@ -322,24 +317,29 @@ void initialise(info* info_ptr){
 	sei();
 	
 	/****************************************************************************************************************************************************************/
-	//info_ptr->stepSpeed = 90;
-	//info_ptr->maxStep = 5000;
-	//
-	//PORTD |= (1<<PORTD4)|(1<<PORTD5);	//enable stepper
-	//while(1){
-		////PORTC |= (1<<PORTC3);
-		////PORTC |= (1<<PORTC2);
-		////PORTC |= (1<<PORTC4);
-		////PORTC |= (1<<PORTC5);
-		////custom_delay(500);
-		////PORTC &= ~(1<<PORTC2);
-		////PORTC &= ~(1<<PORTC3);
-		////PORTC &= ~(1<<PORTC4);
-		////PORTC &= ~(1<<PORTC5);
-		////custom_delay(500);
-		//step(info_ptr);
-//
-	//}
+	info_ptr->stepSpeed = 95;
+	info_ptr->maxStep = 5000;
+	
+	PORTD |= (1<<PORTD6)|(1<<PORTD7);	//enable stepper
+	while(1){
+		
+		step(info_ptr);
+		//step_anticlockwise(30);
+		//info_ptr->stepSpeed = 95;
+		//for (int i = 0; i < 20; i++){
+			//step(info_ptr);
+			////step_anticlockwise(10);
+		//}
+		//custom_delay(200);
+		//info_ptr->stepSpeed = -95;
+		//for (int i = 0; i < 20; i++){
+			//step(info_ptr);
+			////step_clockwise(10);
+		//}
+		////fputs("restart\n", stdout);
+		//custom_delay(500);
+
+	}
 
 	/****************************************************************************************************************************************************************/
 		

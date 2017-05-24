@@ -16,6 +16,10 @@ void init_step(void);
 
 int16_t current_step(void);
 
+void step_clockwise(uint8_t time_on);
+
+void step_anticlockwise(uint8_t time_on);
+
 void step(info* info_ptr);
 
 void hold_step(void);

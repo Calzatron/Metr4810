@@ -38,16 +38,16 @@ void step(info* info_ptr);
 	/* sets the ports for the stepper motor and initializes the steps and phase	*/
 	steps = 0;
 	phase = 0;
+	
+	//BLU = PORTC2;
+	//GRE = PORTC3;
+	//YEL = PORTC4;
+	//RED = PORTC5;
 
 	BLU = PORTC4;
 	GRE = PORTC5;
 	YEL = PORTC2;
 	RED = PORTC3;
-
-	//BLU = PORTC2;
-	//GRE = PORTC3;
-	//YEL = PORTC4;
-	//RED = PORTC5;
 
 	DDRC |= (1<<BLU)|(1<<GRE)|(1<<YEL)|(1<<RED);
  }
@@ -74,6 +74,9 @@ void release_step(void){
 	
 }
 
+
+
+
  void step(info* info_ptr){
 	/*	clockwise defined positive for speed
 	*	will work out how fast to turn motor based on speed by setting
@@ -87,7 +90,7 @@ void release_step(void){
 	
 	int8_t speed = info_ptr->stepSpeed;
 	uint8_t time_on;
-	if (speed >= 0){
+	if (info_ptr->stepSpeed >= 0){
 			if (speed < 10){
 				time_on = 100;
 			} else if (speed < 20) {
@@ -110,6 +113,7 @@ void release_step(void){
 				time_on = 10;
 			}
 			step_clockwise(time_on);
+			//fputs("clockwise\n", stdout);
 	} else {
 			if (speed > -10){
 				time_on = 100;
@@ -133,16 +137,17 @@ void release_step(void){
 				time_on = 10;
 			}
 			step_anticlockwise(time_on);
+			//fputs("anticlockwise\n", stdout);
 	}
  }
 
 /**************************************************************************************swapped increment and decrement so start with claw closed ****************/
- void decrement_step(void){
+ void increment_step(void){
 	/* the motor has turned one step, increase the count */
 	++steps;
  }
 
- void increment_step(void){
+ void decrement_step(void){
 	/* the motor has turned back one step, decrease the count */
 	--steps;
  }
@@ -154,39 +159,42 @@ void release_step(void){
 
 	 uint32_t current_time;
 	 
-	 if(phase == 0){
+	// if(phase == 0){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<GRE)|(1<<YEL);
 			 PORTC &= ~((1<<BLU)|(1<<RED));
 		 }
 		 ++phase;
-	 }
-	 else if(phase == 1){
+	 //}
+	// else if(phase == 1){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<GRE)|(1<<RED);
 			 PORTC &= ~((1<<BLU)|(1<<YEL));
 		 }
 		 ++phase;
-	 }
-	 else if(phase == 2){
+	// }
+	// else if(phase == 2){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<BLU)|(1<<RED);
 			 PORTC &= ~((1<<GRE)|(1<<YEL));
 		 }
 		 ++phase;
-	 }
-	 else if(phase == 3){
+	// }
+	// else if(phase == 3){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<BLU)|(1<<YEL);
 			 PORTC &= ~((1<<GRE)|(1<<RED));
 		 }
 		 phase = 0;
-	 }
+	// }
 	 increment_step();
+	 //char buffer[6];
+	// sprintf(buffer, "C %d\n", phase);
+	// fputs(buffer, stdout);
  }
 
 
@@ -195,37 +203,40 @@ void release_step(void){
 	
 	 uint32_t current_time;
 
-	 if(phase == 0){
+	// if(phase == 0){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<BLU)|(1<<YEL);
 			 PORTC &= ~((1<<GRE)|(1<<RED));
 		 }
 		 ++phase;
-	 }
-	 else if(phase == 1){
+	// }
+	// else if(phase == 1){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<BLU)|(1<<RED);
 			 PORTC &= ~((1<<GRE)|(1<<YEL));
 		 }
 		 ++phase;
-	 }
-	 else if(phase == 2){
+	// }
+	// else if(phase == 2){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<GRE)|(1<<RED);
 			 PORTC &= ~((1<<BLU)|(1<<YEL));
 		 }
 		 ++phase;
-	 }
-	 else if(phase == 3){
+	 //}
+	 //else if(phase == 3){
 		 current_time = get_tcnt1_ticks();
 		 while((current_time + time_on) > get_tcnt1_ticks()){
 			 PORTC |= (1<<GRE)|(1<<YEL);
 			 PORTC &= ~((1<<BLU)|(1<<RED));
 		 }
 		 phase = 0;
-	 }
+	// }
 	 decrement_step();
+	// char buffer[6];
+	// sprintf(buffer, "A %d\n", phase);
+	 //fputs(buffer, stdout);
  }
