@@ -22,6 +22,7 @@ typedef struct info {
 	uint8_t start;
 	uint8_t motorAct;
 	uint8_t stupidCount;
+	char wormCom;
 } info;
 
 
