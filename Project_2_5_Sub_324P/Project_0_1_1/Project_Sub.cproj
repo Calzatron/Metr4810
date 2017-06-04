@@ -28,15 +28,15 @@
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
       <framework-data>
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.25.0" />
-  </dependencies>
-</framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.25.0" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.ispmk2</avrtool>
     <avrtoolserialnumber>000200211965</avrtoolserialnumber>
@@ -134,6 +134,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="pivot.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pivot.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Project.h">
       <SubType>compile</SubType>
     </Compile>
@@ -141,6 +147,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="serialio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Servo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Servo.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tcnt0.c">
@@ -159,12 +171,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Stepper.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="tcnt1.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="tcnt1.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tcnt2.h">

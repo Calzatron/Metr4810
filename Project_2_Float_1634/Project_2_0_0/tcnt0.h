@@ -14,8 +14,6 @@ void init_tcnt0(uint8_t fast_mode);
 /* Return the current clock tick value - milliseconds since the timer was
  * initialised.
  */
-
 uint32_t get_tcnt0_ticks(void);
-
 
 #endif /* TCNT0_H_ */

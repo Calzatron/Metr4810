@@ -37,12 +37,13 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../pivot.c \
 ../Serial.c \
+../Servo.c \
 ../tcnt0.c \
 ../tcnt2.c \
 ../Project_0_1_1.c \
 ../Stepper.c \
-../tcnt1.c \
 ../worm.c
 
 
@@ -53,39 +54,43 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+pivot.o \
 Serial.o \
+Servo.o \
 tcnt0.o \
 tcnt2.o \
 Project_0_1_1.o \
 Stepper.o \
-tcnt1.o \
 worm.o
 
 OBJS_AS_ARGS +=  \
+pivot.o \
 Serial.o \
+Servo.o \
 tcnt0.o \
 tcnt2.o \
 Project_0_1_1.o \
 Stepper.o \
-tcnt1.o \
 worm.o
 
 C_DEPS +=  \
+pivot.d \
 Serial.d \
+Servo.d \
 tcnt0.d \
 tcnt2.d \
 Project_0_1_1.d \
 Stepper.d \
-tcnt1.d \
 worm.d
 
 C_DEPS_AS_ARGS +=  \
+pivot.d \
 Serial.d \
+Servo.d \
 tcnt0.d \
 tcnt2.d \
 Project_0_1_1.d \
 Stepper.d \
-tcnt1.d \
 worm.d
 
 OUTPUT_FILE_PATH +=Project_Sub.elf
@@ -102,6 +107,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

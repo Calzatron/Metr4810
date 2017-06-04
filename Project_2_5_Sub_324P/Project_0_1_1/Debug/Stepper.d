@@ -16,7 +16,7 @@ Stepper.d Stepper.o: .././Stepper.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
- .././Stepper.h .././Project.h .././tcnt1.h .././serialio.h
+ .././Stepper.h .././Project.h .././tcnt0.h .././serialio.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -56,6 +56,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 .././Project.h:
 
-.././tcnt1.h:
+.././tcnt0.h:
 
 .././serialio.h:

@@ -14,7 +14,7 @@
 
 // Custom Libraries
 #include "Stepper.h"
-#include "tcnt1.h"
+#include "tcnt0.h"
 #include "Project.h"
 #include "serialio.h"
 
@@ -162,32 +162,32 @@ void release_step(void){
 	 uint32_t current_time;
 	 
 	 if(phase == 0){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<YEL)|(1<<GRE);
 			 PORTC &= ~((1<<BLU)|(1<<RED));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 1){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<RED)|(1<<GRE);
 			 PORTC &= ~((1<<BLU)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 2){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<BLU)|(1<<RED);
 			 PORTC &= ~((1<<GRE)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 3){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<BLU)|(1<<YEL);
 			 PORTC &= ~((1<<GRE)|(1<<RED));
 		 }
@@ -203,32 +203,32 @@ void release_step(void){
 	 uint32_t current_time;
 
 	 if(phase == 0){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<BLU)|(1<<YEL);
 			 PORTC &= ~((1<<GRE)|(1<<RED));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 1){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<BLU)|(1<<RED);
 			 PORTC &= ~((1<<GRE)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 2){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<GRE)|(1<<RED);
 			 PORTC &= ~((1<<BLU)|(1<<YEL));
 		 }
 		 ++phase;
 	 }
 	 else if(phase == 3){
-		 current_time = get_tcnt1_ticks();
-		 while((current_time + time_on) > get_tcnt1_ticks()){
+		 current_time = get_tcnt0_ticks();
+		 while((current_time + time_on) > get_tcnt0_ticks()){
 			 PORTC |= (1<<GRE)|(1<<YEL);
 			 PORTC &= ~((1<<BLU)|(1<<RED));
 		 }

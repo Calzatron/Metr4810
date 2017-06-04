@@ -9,10 +9,7 @@
 #ifndef TCNT2_H_
 #define TCNT2_H_
 
-
 #include <stdint.h>
-
 void init_tcnt2(void);
-
 
 #endif /* TCNT2_H_ */

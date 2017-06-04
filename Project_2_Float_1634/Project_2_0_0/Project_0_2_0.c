@@ -16,7 +16,6 @@
 #include "tcnt1.h"
 #include "serialio.h"
 
-
 /*	set the UBRR0 register to BAUDREG (12 for 38.4k baudrate) */
 #define F_CPU 8000000L		//Internal Calibrated RC Oscillator 8MHz
 #define BAUDRATE 9600L			//from bluetooth datasheet38400
@@ -27,14 +26,12 @@
 #define ECHO0 PINC5
 #define TRIG1 PINA1
 #define ECHO1 PINA2
-
 #define FAST 1
 
 typedef struct info {
 	double sonicD0;
 	double sonicD1;
 } info;
-
 
 /*	function declarations	*/
 info* makeInfo(void);
@@ -60,39 +57,76 @@ void custom_delay(uint32_t ticks);
 
 
 int main(void) {
-
+	/* initialise the flotation's information struct */
 	info* info_ptr = makeInfo();
 	initialise(info_ptr);
 	//uint16_t count = 0;
 	while(1){
+
 		if (serial_input_available()){
 			char buffer[20];
 			char in = fgetc(stdin);
-			if (in == '+'){
+			if ((in == '=') || (in == '+') || (in == '>')){
 				/*	winch up	*/
+				//PORTC |= (1<<PORTC4);
+				//PORTC &= ~(1<<PORTC5);
+				//PORTA |= (1<<PORTA1);
+				//PORTA &= ~(1<<PORTA2);
 				PORTA |= (1<<PORTA4);
 				PORTA &= ~(1<<PORTA3);
+				//PORTC |= (1<<PORTC1);
+				//PORTC &= ~(1<<PORTC2);
 				if (OCR1B > 250){
 					OCR1B = 100;
 				} else if (OCR1B > 21){
 					OCR1B -= 20;
 				}
+				
 				sprintf(buffer, "lifting\n");
-			} else if (in == '_'){
+			} else if ((in == '_') || (in == '<')){
 				/*	winch down	*/
+				//PORTC |= (1<<PORTC5);
+				//PORTC &= ~(1<<PORTC4);
+				//PORTA |= (1<<PORTA2);
+				//PORTA &= ~(1<<PORTA1);
 				if (OCR1B > 250){
 					OCR1B = 100;
-				} else if (OCR1B > 51){
+					} else if (OCR1B > 51){
 					OCR1B -= 20;
 				}
+				//if (OCR1A > 250){
+					//OCR1A = 100;
+					//} else if (OCR1A > 51){
+					//OCR1A -= 20;
+				//}
 				PORTA |= (1<<PORTA3);
 				PORTA &= ~(1<<PORTA4);
+				//PORTC |= (1<<PORTC2);
+				//PORTC &= ~(1<<PORTC1);
 				sprintf(buffer, "lowering\n");
-			} else if (in == ' '){
+			//} else if (in == '>'){
+					//PORTC |= (1<<PORTC5);
+					//PORTC &= ~(1<<PORTC4);
+					//PORTA &= ~(1<<PORTA1);
+					//PORTA |= (1<<PORTA2);
+					//
+			//} else if (in == '<'){
+				//PORTC |= (1<<PORTC4);
+				//PORTC &= ~(1<<PORTC5);
+				//PORTA |= (1<<PORTA1);
+				//PORTA &= ~(1<<PORTA2);
+			} else if ((in == 'B') || (in == 'N')|| (in == 'V')){
 				/*	stop operation	*/
 				PORTA &= ~(1<<PORTA3);
 				PORTA &= ~(1<<PORTA4);
+				PORTA &= ~(1<<PORTA2);
+				PORTA &= ~(1<<PORTA1);
+				PORTC &= ~(1<<PORTC1);
+				PORTC &= ~(1<<PORTC2);
+				PORTC &= ~(1<<PORTC4);
+				PORTC &= ~(1<<PORTC5);
 				OCR1B = 0xFF;
+				OCR1A = 0xFF;
 				//fputc('?', stdout);
 			} else if (in == '?'){
 				sprintf(buffer, "sensing\n");
@@ -110,65 +144,64 @@ int main(void) {
 				custom_delay(1000);
 				PORTA |= (1<<PORTA5);
 			}
+			
 			/*	echo characters back to terminal	*/
-			if ((in != '_') && (in != '=')){
-				fputc(in, stdout);
-			}
+			fputc(in, stdout);
+			//if ((in != '_') && (in != '=')){
+				//fputc(in, stdout);
+			//} else if (in == '_'){
+				///*	transform back to original '-' char to lower winch	*/
+				//fputc('-', stdout);
+			//}
+			
+			//if (in == ' '){
+				///*	new line for a new command	*/
+				//fputc('\n', stdout);
+			//}
 		}
 	}
 }
 
 
-void initialise(info* info_ptr){
-	
-	
+void initialise(info* info_ptr){	
 	/* sensor pins	*/
 	DDRC |= (1<<TRIG0);
-	DDRC &= ~(1<<ECHO0);
-	
+	DDRC |= (1<<ECHO0);
 	DDRA |= (1<<TRIG1);
-	DDRA &= ~(1<<ECHO1);
-
+	DDRA |= (1<<ECHO1);
 	/* transmission pins */
 	DDRB |= (1<<PORTB0);
 	DDRA &= ~(1<<PINA7);
-
 	/*	Motor pins */
 	DDRA |= (1<<PORTA6)|(1<<PORTA3)|(1<<PORTA4);
 	DDRB |= (1<<PORTB3);
 	DDRC |= (1<<PORTC1)|(1<<PORTC2);
-	
+	PORTA &= ~((1<<PORTA1)|(1<<PORTA2));
 	/* initialise timers / pwm */
 	pwm_initialiser();				/* initially OCR2A = 0 */
 	init_tcnt0(!FAST);
 	init_serial_stdio(9600,0);
-
 	/* set Global Interrupt Enable flag */
 	srand(get_tcnt0_ticks());
 	sei();
-
-
 	/* wait for communication to start from host */
-	
 	custom_delay(1000);
 	/****************************************************************************************************************************************************************/
-	//custom_delay(2000);
-//
-	//PORTA |= (1<<PORTA3);
-	//PORTA &= ~(1<<PORTA4);
-	//PORTC |= (1<<PORTC2);
-	//PORTC &= ~(1<<PORTC3);
-//
-	//while(1){
-		//if (OCR1B > 250){
-			//break;
-		//}
-		//OCR1B += 10;
-		//custom_delay(500);
+	/* insert test code here */
+	//while (1){
+			//PORTC |= (1<<PORTC4);
+			//PORTC &= ~(1<<PORTC5);
+			//PORTA |= (1<<PORTA1);
+			//PORTA &= ~(1<<PORTA2);
+			//
+			//custom_delay(1200);
+			//PORTC |= (1<<PORTC5);
+			//PORTC &= ~(1<<PORTC4);
+			//PORTA |= (1<<PORTA2);
+			//PORTA &= ~(1<<PORTA1);
+			//custom_delay(1200);
 	//}
-	
 	/****************************************************************************************************************************************************************/
-	
 	uint8_t check = 0;
 	while (check < 6){
 		if (serial_input_available()){
@@ -184,7 +217,6 @@ void initialise(info* info_ptr){
 	custom_delay(1000);
 	fputs("Float ready\n", stdout);
 	
-
 }
 
 
@@ -194,11 +226,9 @@ info* makeInfo(void){
 	return info_ptr;
 }
 
-
 void custom_delay(uint32_t ticks){
 	/*	Custom delay function, waits for timer to change by 'ticks'
 	*	note that tcnt0 updates every 0.002 seconds */
-	
 	uint32_t current_time;
 	current_time = get_tcnt0_ticks();
 	while((current_time + ticks) > get_tcnt0_ticks()){
@@ -206,31 +236,31 @@ void custom_delay(uint32_t ticks){
 	}
 }
 
-
 void do_sonic(info* info_ptr){
 	/* performs moving average filter on sensor data
-	*  updates stored values in struct, 0 if unsuccessful */
-	
-	/*	speed up clock for sensor readings */
+	*  updates stored values in struct, 0 if unsuccessful
+	*	speed up clock for sensor readings */
 	uint8_t interrupts_on = bit_is_set(SREG, SREG_I);
 	cli();
 	init_tcnt0(FAST);
+	
 	if(interrupts_on) {
 		sei();
 	}
 	double sonicDist0[3];
 	double sonicDist1[3];
 	uint8_t check[3];
+	
 	for (int i = 0; i < 3; i++){
-
 		check[i] = sonic(info_ptr);
 		sonicDist0[i] = info_ptr->sonicD0;
 		sonicDist1[i] = info_ptr->sonicD1;
-
 	}
+	
 	info_ptr->sonicD0 = 0;
 	info_ptr->sonicD1 = 0;
 	uint8_t count = 0;
+	
 	for (int j = 0; j < 3; j++){
 		if(!check[j]){
 			info_ptr->sonicD0 += sonicDist0[j];
@@ -238,11 +268,12 @@ void do_sonic(info* info_ptr){
 			++count;
 		}
 	}
+	
 	if (count > 0){
 		info_ptr->sonicD0 = info_ptr->sonicD0/count;
 		info_ptr->sonicD1 = info_ptr->sonicD1/count;
 	}
-		
+	
 	/*	continue normal operation */
 	interrupts_on = bit_is_set(SREG, SREG_I);
 	cli();
@@ -258,14 +289,12 @@ uint8_t sonic(info* info_ptr){
 	uint32_t duration;
 	double distance;
 	uint8_t returnValue = 0;
-
 	// sensor 0 first
 	PORTC &= ~(1<<TRIG0);
 	custom_delay(400);
 	PORTC |= (1<<TRIG0);
 	custom_delay(50);
 	PORTC &= ~(1<<TRIG0);
-	
 	//wait for the echo pin to go high, time the duration, calculate and transmit result
 	uint32_t currentTime = get_tcnt0_ticks();
 	uint32_t delay = 800;
@@ -276,6 +305,7 @@ uint8_t sonic(info* info_ptr){
 		}
 	}
 	uint32_t start = get_tcnt0_ticks();
+	
 	//uint16_t pulse = get_pulse() * 2 / 100;
 	while ((PINC & (1<<ECHO0)) && !(returnValue)){
 		//wait for echo pin to go low, but don't hold for too long
@@ -283,37 +313,36 @@ uint8_t sonic(info* info_ptr){
 			returnValue = 1;
 		}
 	}
+	
 	if (!returnValue){
 		duration = (get_tcnt0_ticks() - start);
 		/* multiply by the speed of sound and half for one way travel, then send to serial. */
 		distance = duration*3.4/2;
 		info_ptr->sonicD0 = distance;
-		
 	}
-	
 	// sensor 1 now
 	PORTA &= ~(1<<TRIG1);
 	custom_delay(400);
 	PORTA |= (1<<TRIG1);
 	custom_delay(50);
 	PORTA &= ~(1<<TRIG1);
-	
 	//wait for the echo pin to go high, time the duration, calculate and transmit result
 	currentTime = get_tcnt0_ticks();
 	while ((PINA & (1<<ECHO1)) == 0x00){
-		
 		//wait for echo pin to go high, but don't hold for too long
 		if (currentTime + delay < get_tcnt0_ticks()){
 			returnValue = 2;
 		}
 	}
 	start = get_tcnt0_ticks();
+	
 	while ((PINA & (1<<ECHO1)) && (returnValue != 2)){
 		//wait for echo pin to go low, but don't hold for too long
 		if (start + delay < get_tcnt0_ticks()){
 			returnValue = 2;
 		}
 	}
+	
 	if (returnValue != 2){
 		duration = (get_tcnt0_ticks() - start);
 		// multiply by the speed of sound and half for one way travel, then send to serial.

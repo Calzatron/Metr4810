@@ -11,6 +11,4 @@
 
 void pwm_initialiser(void);
 
-
-
 #endif /* TCNT1_H_ */

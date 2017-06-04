@@ -18,8 +18,8 @@ Project_0_1_1.d Project_0_1_1.o: .././Project_0_1_1.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- .././Stepper.h .././Project.h .././tcnt0.h .././tcnt1.h .././tcnt2.h \
- .././serialio.h .././worm.h
+ .././tcnt0.h .././tcnt2.h .././Stepper.h .././Project.h .././serialio.h \
+ .././worm.h .././servo.h .././pivot.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -59,16 +59,18 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 
+.././tcnt0.h:
+
+.././tcnt2.h:
+
 .././Stepper.h:
 
 .././Project.h:
 
-.././tcnt0.h:
-
-.././tcnt1.h:
-
-.././tcnt2.h:
-
 .././serialio.h:
 
 .././worm.h:
+
+.././servo.h:
+
+.././pivot.h:

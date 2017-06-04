@@ -12,8 +12,6 @@
 #include <stdlib.h>					//standard function library; malloc / sort / rand etc
 
 // Custom Libraries
-#include "Stepper.h"
-#include "tcnt1.h"
 #include "Project.h"
 #include "serialio.h" 
 
@@ -27,16 +25,13 @@ void worm_off(void){
 		/*	turn the motor off	*/
 		PORTC &= ~(1<<RED);
 		PORTC &= ~(1<<BLACK);
-		fputs("Worm off\n", stdout);
+		fputs("Worm1 off\n", stdout);
 		
 }
 
-
 void move_worm(uint8_t percent, int8_t direction){
 	/*	effective pwm to control DC motor for the claw */
-	
 	uint8_t duty = 20;
-	
 		if (direction){
 				// forward
 				PORTC |= (1<<RED);
@@ -49,7 +44,5 @@ void move_worm(uint8_t percent, int8_t direction){
 				PORTC &= ~(1<<RED);
 				custom_delay((duty*percent)/100);
 				PORTC &= ~(1<<RED);
-			
 		}
-		
 }

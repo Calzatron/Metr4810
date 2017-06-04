@@ -9,7 +9,6 @@
 #ifndef WORM_H_
 #define WORM_H_
 
-
 void move_worm(uint8_t percent, int8_t direction);
 void worm_off(void);
 
