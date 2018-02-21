@@ -25,7 +25,7 @@ void pwm_initialiser(void){
 	TCCR1A|=(1<<COM1A1)|(1<<COM1B1)|(1<<COM1B0);
 	//set top value to ICR1
 	ICR1 = 0x00FF;
-	//set corrcet phase and frequency PWM mode
+	//set correct phase and frequency PWM mode
 	TCCR1B|=(1<<WGM13);
 	TCCR1B|=(1<<CS11)|(1<<CS10);
 	OCR1A = 0x00FF;
